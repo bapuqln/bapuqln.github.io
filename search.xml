@@ -1,6 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>AddTwoNumber</title>
+    <url>/2019/11/22/AddTwoNumber/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
+<p><a href="https://leetcode.com/problems/add-two-numbers/">AddTwoNumbers</a> You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.</p>
+<p>You may assume the two numbers do not contain any leading zero, except the number 0 itself.</p>
+<p>Example:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)</span><br><span class="line">Output: 7 -&gt; 0 -&gt; 8</span><br><span class="line">Explanation: 342 + 465 = 807.</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="解题报告">解题报告</h2>
+<h3 id="理解题意">理解题意</h3>
+<ul>
+<li><code>2</code> 个 <code>非空</code>链表，长度可能不相等</li>
+<li>每个链表为<code>逆序</code></li>
+<li>返回两个链表的和</li>
+<li>每个元素应该为正数</li>
+</ul>
+<h3 id="理解例子">理解例子</h3>
+<ul>
+<li><code>2 -&gt; 4 -&gt; 3</code> = <code>342</code></li>
+<li><code>5 -&gt; 6 -&gt; 4</code> = <code>465</code></li>
+<li><code>342 + 465 = 807</code></li>
+<li>答案 : <code>7 -&gt; 0 -&gt; 8</code></li>
+</ul>
+<h3 id="思路">思路</h3>
+<ul>
+<li>将每一个链表变成整形，然后相加，结果分解成链表不大合适，还得处理越界的情况</li>
+<li>比较合理的办法：是一边遍历一边生成链表</li>
+<li>每一个生成的节点为两个数的和，有可能产生进位: 如 <code>7+8=15</code></li>
+<li>一个节点的结果为：<code>sum = 前一个节点的进位+两个节点的和</code>，<code>res = sum % 10</code>;</li>
+<li>一个节点的结果几种情况
+<ul>
+<li><code>last_carry + left + right &lt; 10</code></li>
+<li><code>last_carry + left + right &gt;= 10</code></li>
+<li><code>只要有进位，就一定会有一个新的节点出现</code></li>
+</ul></li>
+</ul>
+<h3 id="代码">代码</h3>
+<h4 id="非递归">非递归</h4>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!l1) <span class="keyword">return</span> l2;</span><br><span class="line">        <span class="keyword">if</span> (!l2) <span class="keyword">return</span> l1;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> carry = <span class="number">0</span>;</span><br><span class="line">        <span class="function">ListNode <span class="title">dummy</span><span class="params">(<span class="number">0</span>)</span></span>;</span><br><span class="line">        ListNode *head = &amp;dummy;</span><br><span class="line">        <span class="keyword">while</span> (l1 || l2 || carry) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = (l1 ? l1-&gt;val : <span class="number">0</span>) + (l2 ? l2-&gt;val : <span class="number">0</span>) + carry;</span><br><span class="line">            head-&gt;next = <span class="keyword">new</span> ListNode (sum % <span class="number">10</span>);</span><br><span class="line">            head = head-&gt;next;</span><br><span class="line">            carry = sum / <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (l1) l1 = l1-&gt;next;</span><br><span class="line">            <span class="keyword">if</span> (l2) l2 = l2-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dummy.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span> </span>&#123;</span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">var</span> val: <span class="type">Int</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">var</span> next: <span class="type">ListNode?</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">init</span>(<span class="number">_</span> val: <span class="type">Int</span>) &#123;</span><br><span class="line">     <span class="keyword">self</span>.val = val</span><br><span class="line">     <span class="keyword">self</span>.next = <span class="literal">nil</span></span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">addTwoNumbers</span><span class="params">(<span class="number">_</span> l1: ListNode?, <span class="number">_</span> l2: ListNode?)</span></span> -&gt; <span class="type">ListNode?</span> &#123;</span><br><span class="line">    	<span class="keyword">var</span> l1 = l1</span><br><span class="line">        <span class="keyword">var</span> l2 = l2</span><br><span class="line">        <span class="keyword">var</span> prev = <span class="type">ListNode</span>(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">var</span> carry = <span class="number">0</span></span><br><span class="line">        <span class="keyword">let</span> head = prev</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> l1 != <span class="literal">nil</span> || l2 != <span class="literal">nil</span> || carry != <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> cur = <span class="type">ListNode</span>(<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">let</span> sum = (l2 == <span class="literal">nil</span> ? <span class="number">0</span> : l2!.val) + (l1 == <span class="literal">nil</span> ? <span class="number">0</span> : l1!.val) + carry</span><br><span class="line">            cur.val = sum % <span class="number">10</span></span><br><span class="line">            carry = sum / <span class="number">10</span></span><br><span class="line">            prev.next = cur</span><br><span class="line">            prev = cur</span><br><span class="line">            l1 = l1 == <span class="literal">nil</span> ? l1: l1?.next</span><br><span class="line">            l2 = l2 == <span class="literal">nil</span> ? l2: l2?.next</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> head.next</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="递归">递归</h4>
+<p>这道题比较简单，递归模式也比较好想到 加法需要三个值，两个操作符（来自两个链表）以及一个进位标记。 因此递归模式为：</p>
+<ul>
+<li>递归出口：两个链表都已经到达末尾，并且没有进位</li>
+<li>递归实现：
+<ul>
+<li>当前节点的结果为：和/10</li>
+<li>当前节点的next节点为：对于两个链表next节点的计算的结果</li>
+</ul></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2, <span class="keyword">int</span> carry)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!l1 &amp;&amp; !l2 &amp;&amp; !carry) <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="keyword">int</span> sum = (l1?l1-&gt;val:<span class="number">0</span>) + (l2?l2-&gt;val:<span class="number">0</span>) + carry;</span><br><span class="line">        ListNode *ans = <span class="keyword">new</span> ListNode(sum % <span class="number">10</span>);</span><br><span class="line">        ans-&gt;next = addTwoNumbers(l1?l1-&gt;next:<span class="literal">nullptr</span>, l2?l2-&gt;next:<span class="literal">nullptr</span>, sum / <span class="number">10</span>);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> addTwoNumbers(l1, l2, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="时间复杂度">时间复杂度</h3>
+<p>遍历次数：<code>max(len(l1), len(l2)) + 1</code>，因此是线性时间 \(\)</p>
+<h3 id="空间复杂度">空间复杂度</h3>
+<p>额外申请了和一个链表，因此空间复杂度也为 \(\)</p>
+]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>LeetCode</tag>
+        <tag>Medium</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Basic Calculator</title>
     <url>/2020/06/12/BasicCalculator/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -71,71 +136,6 @@
       <tags>
         <tag>LeetCode</tag>
         <tag>Hard</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>AddTwoNumber</title>
-    <url>/2019/11/22/AddTwoNumber/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://leetcode.com/problems/add-two-numbers/">AddTwoNumbers</a> You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.</p>
-<p>You may assume the two numbers do not contain any leading zero, except the number 0 itself.</p>
-<p>Example:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)</span><br><span class="line">Output: 7 -&gt; 0 -&gt; 8</span><br><span class="line">Explanation: 342 + 465 = 807.</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li><code>2</code> 个 <code>非空</code>链表，长度可能不相等</li>
-<li>每个链表为<code>逆序</code></li>
-<li>返回两个链表的和</li>
-<li>每个元素应该为正数</li>
-</ul>
-<h3 id="理解例子">理解例子</h3>
-<ul>
-<li><code>2 -&gt; 4 -&gt; 3</code> = <code>342</code></li>
-<li><code>5 -&gt; 6 -&gt; 4</code> = <code>465</code></li>
-<li><code>342 + 465 = 807</code></li>
-<li>答案 : <code>7 -&gt; 0 -&gt; 8</code></li>
-</ul>
-<h3 id="思路">思路</h3>
-<ul>
-<li>将每一个链表变成整形，然后相加，结果分解成链表不大合适，还得处理越界的情况</li>
-<li>比较合理的办法：是一边遍历一边生成链表</li>
-<li>每一个生成的节点为两个数的和，有可能产生进位: 如 <code>7+8=15</code></li>
-<li>一个节点的结果为：<code>sum = 前一个节点的进位+两个节点的和</code>，<code>res = sum % 10</code>;</li>
-<li>一个节点的结果几种情况
-<ul>
-<li><code>last_carry + left + right &lt; 10</code></li>
-<li><code>last_carry + left + right &gt;= 10</code></li>
-<li><code>只要有进位，就一定会有一个新的节点出现</code></li>
-</ul></li>
-</ul>
-<h3 id="代码">代码</h3>
-<h4 id="非递归">非递归</h4>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!l1) <span class="keyword">return</span> l2;</span><br><span class="line">        <span class="keyword">if</span> (!l2) <span class="keyword">return</span> l1;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> carry = <span class="number">0</span>;</span><br><span class="line">        <span class="function">ListNode <span class="title">dummy</span><span class="params">(<span class="number">0</span>)</span></span>;</span><br><span class="line">        ListNode *head = &amp;dummy;</span><br><span class="line">        <span class="keyword">while</span> (l1 || l2 || carry) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = (l1 ? l1-&gt;val : <span class="number">0</span>) + (l2 ? l2-&gt;val : <span class="number">0</span>) + carry;</span><br><span class="line">            head-&gt;next = <span class="keyword">new</span> ListNode (sum % <span class="number">10</span>);</span><br><span class="line">            head = head-&gt;next;</span><br><span class="line">            carry = sum / <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (l1) l1 = l1-&gt;next;</span><br><span class="line">            <span class="keyword">if</span> (l2) l2 = l2-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dummy.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span> </span>&#123;</span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">var</span> val: <span class="type">Int</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">var</span> next: <span class="type">ListNode?</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">init</span>(<span class="number">_</span> val: <span class="type">Int</span>) &#123;</span><br><span class="line">     <span class="keyword">self</span>.val = val</span><br><span class="line">     <span class="keyword">self</span>.next = <span class="literal">nil</span></span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">addTwoNumbers</span><span class="params">(<span class="number">_</span> l1: ListNode?, <span class="number">_</span> l2: ListNode?)</span></span> -&gt; <span class="type">ListNode?</span> &#123;</span><br><span class="line">    	<span class="keyword">var</span> l1 = l1</span><br><span class="line">        <span class="keyword">var</span> l2 = l2</span><br><span class="line">        <span class="keyword">var</span> prev = <span class="type">ListNode</span>(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">var</span> carry = <span class="number">0</span></span><br><span class="line">        <span class="keyword">let</span> head = prev</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> l1 != <span class="literal">nil</span> || l2 != <span class="literal">nil</span> || carry != <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> cur = <span class="type">ListNode</span>(<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">let</span> sum = (l2 == <span class="literal">nil</span> ? <span class="number">0</span> : l2!.val) + (l1 == <span class="literal">nil</span> ? <span class="number">0</span> : l1!.val) + carry</span><br><span class="line">            cur.val = sum % <span class="number">10</span></span><br><span class="line">            carry = sum / <span class="number">10</span></span><br><span class="line">            prev.next = cur</span><br><span class="line">            prev = cur</span><br><span class="line">            l1 = l1 == <span class="literal">nil</span> ? l1: l1?.next</span><br><span class="line">            l2 = l2 == <span class="literal">nil</span> ? l2: l2?.next</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> head.next</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="递归">递归</h4>
-<p>这道题比较简单，递归模式也比较好想到 加法需要三个值，两个操作符（来自两个链表）以及一个进位标记。 因此递归模式为：</p>
-<ul>
-<li>递归出口：两个链表都已经到达末尾，并且没有进位</li>
-<li>递归实现：
-<ul>
-<li>当前节点的结果为：和/10</li>
-<li>当前节点的next节点为：对于两个链表next节点的计算的结果</li>
-</ul></li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2, <span class="keyword">int</span> carry)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!l1 &amp;&amp; !l2 &amp;&amp; !carry) <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="keyword">int</span> sum = (l1?l1-&gt;val:<span class="number">0</span>) + (l2?l2-&gt;val:<span class="number">0</span>) + carry;</span><br><span class="line">        ListNode *ans = <span class="keyword">new</span> ListNode(sum % <span class="number">10</span>);</span><br><span class="line">        ans-&gt;next = addTwoNumbers(l1?l1-&gt;next:<span class="literal">nullptr</span>, l2?l2-&gt;next:<span class="literal">nullptr</span>, sum / <span class="number">10</span>);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> addTwoNumbers(l1, l2, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p>遍历次数：<code>max(len(l1), len(l2)) + 1</code>，因此是线性时间 \(\)</p>
-<h3 id="空间复杂度">空间复杂度</h3>
-<p>额外申请了和一个链表，因此空间复杂度也为 \(\)</p>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Medium</tag>
       </tags>
   </entry>
   <entry>
@@ -220,36 +220,6 @@
       </tags>
   </entry>
   <entry>
-    <title>位操作</title>
-    <url>/2020/08/11/BitManupulate/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p><a id="more"></a></p>
-<h1 id="位操作总结">位操作总结</h1>
-<p>基本上位操作就那么几个:</p>
-<h2 id="异或的特性">异或的特性</h2>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">x ^ <span class="number">0</span> = x</span><br><span class="line"></span><br><span class="line">x ^ <span class="number">11111</span>……<span class="number">1111</span> = ~x</span><br><span class="line"></span><br><span class="line">x ^ (~x) = <span class="number">11111</span>……<span class="number">1111</span></span><br><span class="line"></span><br><span class="line">x ^ x = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">a ^ b = c =&gt; a ^ c = b =&gt; b ^ c = a (交换律) a ^ b ^ c = a ^ (b ^ c) = (a ^ b）^ c (结合律)</span><br></pre></td></tr></table></figure>
-<h2 id="构造特殊的mask">构造特殊的Mask</h2>
-<ul>
-<li>将 <code>x</code> 最右边的 <code>n</code> 位清零， <code>x &amp; ( ~0 &lt;&lt; n )</code></li>
-<li>获取 <code>x</code> 的第 <code>n</code> 位值(0 或者 1)，<code>(x &gt;&gt; n) &amp; 1</code></li>
-<li>获取 <code>x</code> 的第 <code>n</code> 位的幂值，<code>x &amp; (1 &lt;&lt; (n - 1))</code></li>
-<li>仅将第 <code>n</code> 位置为 <code>1</code>，<code>x | (1 &lt;&lt; n)</code></li>
-<li>仅将第 <code>n</code> 位置为 <code>0</code>，<code>x &amp; (~(1 &lt;&lt; n))</code></li>
-<li>将 <code>x</code> 最⾼位⾄第 <code>n</code> 位(含)清零，<code>x &amp; ((1 &lt;&lt; n) - 1)</code></li>
-<li>将第 <code>n</code> 位⾄第 <code>0</code> 位(含)清零，<code>x &amp; (~((1 &lt;&lt; (n + 1)) - 1)</code></li>
-</ul>
-<h2 id="section"></h2>
-<p><code>X &amp; 1 == 1</code> 判断是否是奇数(偶数) <code>X &amp; = (X - 1)</code> 将最低位(LSB)的 1 清零 <code>X &amp; -X</code> 得到最低位(LSB)的 1</p>
-<p><code>X &amp; ~X = 0</code></p>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Bit Manupulate</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Boyer Moore Majority Vote Algorithm</title>
     <url>/2019/11/22/BoyerMooreMajorityVoteAlgorithm/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -284,6 +254,36 @@
       <tags>
         <tag>LeetCode</tag>
         <tag>Medium</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>位操作</title>
+    <url>/2020/08/11/BitManupulate/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p><a id="more"></a></p>
+<h1 id="位操作总结">位操作总结</h1>
+<p>基本上位操作就那么几个:</p>
+<h2 id="异或的特性">异或的特性</h2>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">x ^ <span class="number">0</span> = x</span><br><span class="line"></span><br><span class="line">x ^ <span class="number">11111</span>……<span class="number">1111</span> = ~x</span><br><span class="line"></span><br><span class="line">x ^ (~x) = <span class="number">11111</span>……<span class="number">1111</span></span><br><span class="line"></span><br><span class="line">x ^ x = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">a ^ b = c =&gt; a ^ c = b =&gt; b ^ c = a (交换律) a ^ b ^ c = a ^ (b ^ c) = (a ^ b）^ c (结合律)</span><br></pre></td></tr></table></figure>
+<h2 id="构造特殊的mask">构造特殊的Mask</h2>
+<ul>
+<li>将 <code>x</code> 最右边的 <code>n</code> 位清零， <code>x &amp; ( ~0 &lt;&lt; n )</code></li>
+<li>获取 <code>x</code> 的第 <code>n</code> 位值(0 或者 1)，<code>(x &gt;&gt; n) &amp; 1</code></li>
+<li>获取 <code>x</code> 的第 <code>n</code> 位的幂值，<code>x &amp; (1 &lt;&lt; (n - 1))</code></li>
+<li>仅将第 <code>n</code> 位置为 <code>1</code>，<code>x | (1 &lt;&lt; n)</code></li>
+<li>仅将第 <code>n</code> 位置为 <code>0</code>，<code>x &amp; (~(1 &lt;&lt; n))</code></li>
+<li>将 <code>x</code> 最⾼位⾄第 <code>n</code> 位(含)清零，<code>x &amp; ((1 &lt;&lt; n) - 1)</code></li>
+<li>将第 <code>n</code> 位⾄第 <code>0</code> 位(含)清零，<code>x &amp; (~((1 &lt;&lt; (n + 1)) - 1)</code></li>
+</ul>
+<h2 id="section"></h2>
+<p><code>X &amp; 1 == 1</code> 判断是否是奇数(偶数) <code>X &amp; = (X - 1)</code> 将最低位(LSB)的 1 清零 <code>X &amp; -X</code> 得到最低位(LSB)的 1</p>
+<p><code>X &amp; ~X = 0</code></p>
+]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>LeetCode</tag>
+        <tag>Bit Manupulate</tag>
       </tags>
   </entry>
   <entry>
@@ -616,6 +616,49 @@ K = 4</code></pre>
       </tags>
   </entry>
   <entry>
+    <title>Find the Duplicated Number</title>
+    <url>/2020/06/27/FindTheDuplicatedNumber/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
+<p><a href="http://bookshadow.com/weblog/2015/09/28/leetcode-find-duplicate-number/">Find the Duplicated Number</a> Given an array nums containing n + 1 integers where each integer is between 1 and n (inclusive), prove that at least one duplicate number must exist. Assume that there is only one duplicate number, find the duplicate one.</p>
+<p>Example 1:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: [1,3,4,2,2]</span><br><span class="line">Output: 2</span><br></pre></td></tr></table></figure>
+<p>Example 2: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: [3,1,3,4,2]</span><br><span class="line">Output: 3</span><br></pre></td></tr></table></figure> Note:</p>
+<p>You must not modify the array (assume the array is read only). You must use only constant, O(1) extra space. Your runtime complexity should be less than O(n2). There is only one duplicate number in the array, but it could be repeated more than once.</p>
+<a id="more"></a>
+<h2 id="解题报告">解题报告</h2>
+<h3 id="理解题意">理解题意</h3>
+<ul>
+<li>给定一个大小为 <code>n+1</code> 的数组，其中每一个数字都是在 <code>1--N</code> 的区间内, 证明至少有一个重复数字是存在的，假定只有唯一的一个重复数字，找到他</li>
+<li>不能修改数组, 排序也就不能用了。</li>
+<li>常量空间</li>
+<li>运行时间要比 N^2要小，那就只剩下 O(n) O(nlogn) O(logn) 的算法可用。</li>
+</ul>
+<h3 id="理解例子">理解例子</h3>
+<ul>
+<li><code>2 -&gt; 4 -&gt; 3</code> = <code>342</code></li>
+<li><code>5 -&gt; 6 -&gt; 4</code> = <code>465</code></li>
+<li><code>342 + 465 = 807</code></li>
+<li>答案 : <code>7 -&gt; 0 -&gt; 8</code></li>
+</ul>
+<h3 id="思路">思路</h3>
+<ul>
+<li>证明至少存在一个重复数字，如果元素是<code>[1,n]</code> 那么就存在 <code>n</code> 个不同的数字，分别将每一个位置都占据了，当数字个数为 <code>n+1</code> 时，那么最少有一个数字是重复的</li>
+<li>由于数组的 <code>n+1</code> 个元素的取值范围为 <code>1..n</code>，假定映射关系为 <code>f</code>，那么就存在一个函数 <code>f(i) --&gt;</code> 可以取到 <code>nums[i]</code>，重复的情况就是说存在另一个数字 <code>j</code>，在<code>i != j</code>的前提下，存在 <code>f(i) == f(j)</code>， 那么剩下的问题就是如何将 <code>f</code> 表示出来</li>
+<li>就是说使用函数 f。遍历整个数组，总会存在一个位置导致没有办法结束，走入无限循环，也就是类似链表存在环。</li>
+<li>证明过程：<a href="http://bookshadow.com/weblog/2015/09/28/leetcode-find-duplicate-number/">证明过程</a></li>
+</ul>
+<h3 id="代码">代码</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">findDubplicated</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> slow = <span class="number">0</span>, fast = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            slow = nums[slow];</span><br><span class="line">            fast = nums[nums[fast]];</span><br><span class="line">            <span class="keyword">if</span> (slow == fast)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> find = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            slow = nums[slow];</span><br><span class="line">            find = nums[find];</span><br><span class="line">            <span class="keyword">if</span> (slow == find)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> find;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>LeetCode</tag>
+        <tag>Medium</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Find K-th Smallest Pair Distance</title>
     <url>/2020/07/04/FindKtheSmallestPairDistance/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -670,49 +713,6 @@ K = 4</code></pre>
       <tags>
         <tag>LeetCode</tag>
         <tag>Hard</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Find the Duplicated Number</title>
-    <url>/2020/06/27/FindTheDuplicatedNumber/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="http://bookshadow.com/weblog/2015/09/28/leetcode-find-duplicate-number/">Find the Duplicated Number</a> Given an array nums containing n + 1 integers where each integer is between 1 and n (inclusive), prove that at least one duplicate number must exist. Assume that there is only one duplicate number, find the duplicate one.</p>
-<p>Example 1:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: [1,3,4,2,2]</span><br><span class="line">Output: 2</span><br></pre></td></tr></table></figure>
-<p>Example 2: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: [3,1,3,4,2]</span><br><span class="line">Output: 3</span><br></pre></td></tr></table></figure> Note:</p>
-<p>You must not modify the array (assume the array is read only). You must use only constant, O(1) extra space. Your runtime complexity should be less than O(n2). There is only one duplicate number in the array, but it could be repeated more than once.</p>
-<a id="more"></a>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li>给定一个大小为 <code>n+1</code> 的数组，其中每一个数字都是在 <code>1--N</code> 的区间内, 证明至少有一个重复数字是存在的，假定只有唯一的一个重复数字，找到他</li>
-<li>不能修改数组, 排序也就不能用了。</li>
-<li>常量空间</li>
-<li>运行时间要比 N^2要小，那就只剩下 O(n) O(nlogn) O(logn) 的算法可用。</li>
-</ul>
-<h3 id="理解例子">理解例子</h3>
-<ul>
-<li><code>2 -&gt; 4 -&gt; 3</code> = <code>342</code></li>
-<li><code>5 -&gt; 6 -&gt; 4</code> = <code>465</code></li>
-<li><code>342 + 465 = 807</code></li>
-<li>答案 : <code>7 -&gt; 0 -&gt; 8</code></li>
-</ul>
-<h3 id="思路">思路</h3>
-<ul>
-<li>证明至少存在一个重复数字，如果元素是<code>[1,n]</code> 那么就存在 <code>n</code> 个不同的数字，分别将每一个位置都占据了，当数字个数为 <code>n+1</code> 时，那么最少有一个数字是重复的</li>
-<li>由于数组的 <code>n+1</code> 个元素的取值范围为 <code>1..n</code>，假定映射关系为 <code>f</code>，那么就存在一个函数 <code>f(i) --&gt;</code> 可以取到 <code>nums[i]</code>，重复的情况就是说存在另一个数字 <code>j</code>，在<code>i != j</code>的前提下，存在 <code>f(i) == f(j)</code>， 那么剩下的问题就是如何将 <code>f</code> 表示出来</li>
-<li>就是说使用函数 f。遍历整个数组，总会存在一个位置导致没有办法结束，走入无限循环，也就是类似链表存在环。</li>
-<li>证明过程：<a href="http://bookshadow.com/weblog/2015/09/28/leetcode-find-duplicate-number/">证明过程</a></li>
-</ul>
-<h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">findDubplicated</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> slow = <span class="number">0</span>, fast = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            slow = nums[slow];</span><br><span class="line">            fast = nums[nums[fast]];</span><br><span class="line">            <span class="keyword">if</span> (slow == fast)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> find = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            slow = nums[slow];</span><br><span class="line">            find = nums[find];</span><br><span class="line">            <span class="keyword">if</span> (slow == find)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> find;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Medium</tag>
       </tags>
   </entry>
   <entry>
@@ -1098,72 +1098,6 @@ A[6] = 4</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>MedianOfTwoSortedArrays</title>
-    <url>/2019/11/23/MedianOfTwoSortedArrays/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://leetcode.com/problems/median-of-two-sorted-arrays/">Median of Two Sorted Arrays</a> There are two sorted arrays nums1 and nums2 of size m and n respectively.</p>
-<p>Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).</p>
-<p>You may assume nums1 and nums2 cannot be both empty.</p>
-<p>Example 1:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nums1 = [1, 3]</span><br><span class="line">nums2 = [2]</span><br><span class="line"></span><br><span class="line">The median is 2.0</span><br></pre></td></tr></table></figure>
-<p>Example 2: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nums1 = [1, 2]</span><br><span class="line">nums2 = [3, 4]</span><br><span class="line"></span><br><span class="line">The median is (2 + 3)/2 = 2.5</span><br></pre></td></tr></table></figure> <a id="more"></a></p>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li>两个数组：m &amp; n （已排好序）</li>
-<li>找到两个数组的中间节点</li>
-<li>时间复杂度要求：\(\)</li>
-</ul>
-<h3 id="理解例子">理解例子</h3>
-<h4 id="例子-1">例子 1</h4>
-<ul>
-<li>nums1：<code>[1, 3]</code></li>
-<li>nums2：<code>[2]</code></li>
-<li>中间的元素为 2， 因为总共3个元素：1，2，3；</li>
-</ul>
-<h4 id="例子-2">例子 2</h4>
-<ul>
-<li>nums1：<code>[1, 2]</code></li>
-<li>nums2：<code>[3，4]</code></li>
-<li>中间的元素为 2.5， 因为总共4个元素：<code>[1，2，3，4]</code>；（2+3）/2 = 2.5</li>
-</ul>
-<h3 id="思路">思路</h3>
-<ul>
-<li>从例子来看，把两个数组的元素分别插入到一个新的数组，然后再遍历找到居中的元素，时间复杂度为\(\)。</li>
-<li>要求时间复杂度为 \(\)，这个算是比较强烈的提示（对n个元素折半查找-<code>BinarySearch</code>就是 \(\)）</li>
-<li>那么剩下的问题就是如何折半，哪里到哪里折半，怎么调整lr.</li>
-<li>其实最终的找到的点：左半部分小于右半部分。第一个数组的左半部分小于第二个数组的右半部分，第二个数组的左半部分小于第二个数组的右半部分。并且是合并后数组中间的部分。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 非递归版本</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;vec, <span class="keyword">int</span> result)</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> l = <span class="number">0</span>, r = vec.size();</span><br><span class="line">  <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">     <span class="keyword">int</span> mid = (r + l)/<span class="number">2</span>;</span><br><span class="line">     <span class="keyword">if</span> (vec[mid] == result) <span class="keyword">return</span> mid; <span class="comment">// found the result</span></span><br><span class="line">     <span class="keyword">if</span> (vec[mid] &gt; result) &#123; <span class="comment">// the index is on the left side of mid</span></span><br><span class="line">         r = mid;</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         l = mid+<span class="number">1</span>;</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 递归版本</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;vec, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> result)</span></span>&#123;</span><br><span class="line">     <span class="keyword">int</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">     <span class="keyword">if</span> (vec[mid] == result) <span class="keyword">return</span> mid;</span><br><span class="line">     <span class="keyword">if</span> (vec[mid] &gt; result) &#123;</span><br><span class="line">         <span class="keyword">return</span> binarySearch(vec, l, mid, result);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="keyword">return</span> binarySearch(vec, mid+<span class="number">1</span>, r, result);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>假定合并后的数组为C</li>
-<li>从第一个数组取m1个元素，第二个元素取m2个元素，来构成前k个元素，来满足第k/k+1个元素就是中位数的候选数。其中k = m1 + m2 = (m + n + 1)/2。加 1 是为了不用考虑奇偶。</li>
-<li>找到的元素为 \(\),根据总数奇数和偶数。</li>
-<li></li>
-</ul>
-<h4 id="流程">流程</h4>
-<ul>
-<li>如果某一个为空，则返回另一个数组的中间元素即可</li>
-<li></li>
-<li>遍历完成后返回最大的长度</li>
-<li>时间复杂度：线性时间 \(\)</li>
-</ul>
-<h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">findMediaSortedArrays</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;nums1, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;nums2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> m = nums1.size();</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> n = nums2.size();</span><br><span class="line">        <span class="keyword">if</span> (m &gt; n) <span class="keyword">return</span> findMediaSortedArrays(nums2, nums1);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p>如一开始分析：时间复杂度：线性时间 \(\)</p>
-<h3 id="空间复杂度">空间复杂度</h3>
-<p>额外申请了和一个链表，因此空间复杂度也为 \(\)</p>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Hard</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Minimum Number of Flips to Convert Binary Matrix to Zero Matrix</title>
     <url>/2019/12/11/MinimumNumberofFlipsToConvertBinaryMatrixToZero/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -1239,6 +1173,72 @@ A[6] = 4</code></pre>
 </ul>
 <h4 id="伪代码">伪代码</h4>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">palindromePartition</span><span class="params">(<span class="built_in">string</span> &amp;str, <span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="代码">代码</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">findMediaSortedArrays</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;nums1, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;nums2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> m = nums1.size();</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> n = nums2.size();</span><br><span class="line">        <span class="keyword">if</span> (m &gt; n) <span class="keyword">return</span> findMediaSortedArrays(nums2, nums1);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="时间复杂度">时间复杂度</h3>
+<p>如一开始分析：时间复杂度：线性时间 \(\)</p>
+<h3 id="空间复杂度">空间复杂度</h3>
+<p>额外申请了和一个链表，因此空间复杂度也为 \(\)</p>
+]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>LeetCode</tag>
+        <tag>Hard</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MedianOfTwoSortedArrays</title>
+    <url>/2019/11/23/MedianOfTwoSortedArrays/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
+<p><a href="https://leetcode.com/problems/median-of-two-sorted-arrays/">Median of Two Sorted Arrays</a> There are two sorted arrays nums1 and nums2 of size m and n respectively.</p>
+<p>Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).</p>
+<p>You may assume nums1 and nums2 cannot be both empty.</p>
+<p>Example 1:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nums1 = [1, 3]</span><br><span class="line">nums2 = [2]</span><br><span class="line"></span><br><span class="line">The median is 2.0</span><br></pre></td></tr></table></figure>
+<p>Example 2: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nums1 = [1, 2]</span><br><span class="line">nums2 = [3, 4]</span><br><span class="line"></span><br><span class="line">The median is (2 + 3)/2 = 2.5</span><br></pre></td></tr></table></figure> <a id="more"></a></p>
+<h2 id="解题报告">解题报告</h2>
+<h3 id="理解题意">理解题意</h3>
+<ul>
+<li>两个数组：m &amp; n （已排好序）</li>
+<li>找到两个数组的中间节点</li>
+<li>时间复杂度要求：\(\)</li>
+</ul>
+<h3 id="理解例子">理解例子</h3>
+<h4 id="例子-1">例子 1</h4>
+<ul>
+<li>nums1：<code>[1, 3]</code></li>
+<li>nums2：<code>[2]</code></li>
+<li>中间的元素为 2， 因为总共3个元素：1，2，3；</li>
+</ul>
+<h4 id="例子-2">例子 2</h4>
+<ul>
+<li>nums1：<code>[1, 2]</code></li>
+<li>nums2：<code>[3，4]</code></li>
+<li>中间的元素为 2.5， 因为总共4个元素：<code>[1，2，3，4]</code>；（2+3）/2 = 2.5</li>
+</ul>
+<h3 id="思路">思路</h3>
+<ul>
+<li>从例子来看，把两个数组的元素分别插入到一个新的数组，然后再遍历找到居中的元素，时间复杂度为\(\)。</li>
+<li>要求时间复杂度为 \(\)，这个算是比较强烈的提示（对n个元素折半查找-<code>BinarySearch</code>就是 \(\)）</li>
+<li>那么剩下的问题就是如何折半，哪里到哪里折半，怎么调整lr.</li>
+<li>其实最终的找到的点：左半部分小于右半部分。第一个数组的左半部分小于第二个数组的右半部分，第二个数组的左半部分小于第二个数组的右半部分。并且是合并后数组中间的部分。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 非递归版本</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;vec, <span class="keyword">int</span> result)</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> l = <span class="number">0</span>, r = vec.size();</span><br><span class="line">  <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">     <span class="keyword">int</span> mid = (r + l)/<span class="number">2</span>;</span><br><span class="line">     <span class="keyword">if</span> (vec[mid] == result) <span class="keyword">return</span> mid; <span class="comment">// found the result</span></span><br><span class="line">     <span class="keyword">if</span> (vec[mid] &gt; result) &#123; <span class="comment">// the index is on the left side of mid</span></span><br><span class="line">         r = mid;</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         l = mid+<span class="number">1</span>;</span><br><span class="line">     &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 递归版本</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;vec, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> result)</span></span>&#123;</span><br><span class="line">     <span class="keyword">int</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">     <span class="keyword">if</span> (vec[mid] == result) <span class="keyword">return</span> mid;</span><br><span class="line">     <span class="keyword">if</span> (vec[mid] &gt; result) &#123;</span><br><span class="line">         <span class="keyword">return</span> binarySearch(vec, l, mid, result);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="keyword">return</span> binarySearch(vec, mid+<span class="number">1</span>, r, result);</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>假定合并后的数组为C</li>
+<li>从第一个数组取m1个元素，第二个元素取m2个元素，来构成前k个元素，来满足第k/k+1个元素就是中位数的候选数。其中k = m1 + m2 = (m + n + 1)/2。加 1 是为了不用考虑奇偶。</li>
+<li>找到的元素为 \(\),根据总数奇数和偶数。</li>
+<li></li>
+</ul>
+<h4 id="流程">流程</h4>
+<ul>
+<li>如果某一个为空，则返回另一个数组的中间元素即可</li>
+<li></li>
+<li>遍历完成后返回最大的长度</li>
+<li>时间复杂度：线性时间 \(\)</li>
+</ul>
 <h3 id="代码">代码</h3>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">findMediaSortedArrays</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;nums1, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;nums2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> m = nums1.size();</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> n = nums2.size();</span><br><span class="line">        <span class="keyword">if</span> (m &gt; n) <span class="keyword">return</span> findMediaSortedArrays(nums2, nums1);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <h3 id="时间复杂度">时间复杂度</h3>
@@ -1847,6 +1847,25 @@ A[6] = 4</code></pre>
       </tags>
   </entry>
   <entry>
+    <title>VSCode C++ 配置</title>
+    <url>/2020/10/03/VSCode-C/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h1 id="配置">配置</h1>
+<p>经常用 VSCode 来开发 C++，但是调试和配置每次都很头疼，现记录一下配置，备忘</p>
+<h2 id="tasks.json">tasks.json</h2>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="comment">// See https://go.microsoft.com/fwlink/?LinkId=733558</span></span><br><span class="line">    <span class="comment">// for the documentation about the tasks.json format</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;2.0.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;tasks&quot;</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;shell&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;label&quot;</span>: <span class="string">&quot;clang++ build active file&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;command&quot;</span>: <span class="string">&quot;/usr/bin/clang++&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;args&quot;</span>: [</span><br><span class="line">          <span class="string">&quot;-std=c++17&quot;</span>,</span><br><span class="line">          <span class="string">&quot;-stdlib=libc++&quot;</span>,</span><br><span class="line">          <span class="string">&quot;-g&quot;</span>,</span><br><span class="line">          <span class="comment">// &quot;$&#123;workspaceFolder&#125;/*.cpp&quot;,</span></span><br><span class="line">          <span class="string">&quot;$&#123;file&#125;&quot;</span>,</span><br><span class="line">          <span class="string">&quot;-o&quot;</span>,</span><br><span class="line">          <span class="string">&quot;$&#123;fileDirname&#125;/$&#123;fileBasenameNoExtension&#125;&quot;</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">&quot;options&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;cwd&quot;</span>: <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;problemMatcher&quot;</span>: [<span class="string">&quot;$gcc&quot;</span>],</span><br><span class="line">        <span class="attr">&quot;group&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;kind&quot;</span>: <span class="string">&quot;build&quot;</span>,</span><br><span class="line">          <span class="attr">&quot;isDefault&quot;</span>: <span class="literal">true</span></span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="launch.json">launch.json</h2>
+<p>build and debug <figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.2.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;C++ - Build and debug active file&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;cppdbg&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;request&quot;</span>: <span class="string">&quot;launch&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;program&quot;</span>: <span class="string">&quot;$&#123;fileDirname&#125;/$&#123;fileBasenameNoExtension&#125;&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;args&quot;</span>: [],</span><br><span class="line">            <span class="attr">&quot;stopAtEntry&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">            <span class="attr">&quot;cwd&quot;</span>: <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;environment&quot;</span>: [],</span><br><span class="line">            <span class="attr">&quot;externalConsole&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">            <span class="attr">&quot;MIMode&quot;</span>: <span class="string">&quot;lldb&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;preLaunchTask&quot;</span>: <span class="string">&quot;clang++ build active file&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;setupCommands&quot;</span>: [</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;Enable pretty-printing for gdb&quot;</span>,</span><br><span class="line">                    <span class="attr">&quot;text&quot;</span>: <span class="string">&quot;-enable-pretty-printing&quot;</span>,</span><br><span class="line">                    <span class="attr">&quot;ignoreFailures&quot;</span>: <span class="literal">true</span></span><br><span class="line">                &#125;</span><br><span class="line">            ],</span><br><span class="line">          &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="c_cpp_cofiguration.json">c_cpp_cofiguration.json</h2>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Mac&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;includePath&quot;</span>: [<span class="string">&quot;$&#123;workspaceFolder&#125;/**&quot;</span>, <span class="string">&quot;/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/&quot;</span>],</span><br><span class="line">        <span class="attr">&quot;defines&quot;</span>: [],</span><br><span class="line">        <span class="attr">&quot;macFrameworkPath&quot;</span>: [</span><br><span class="line">          <span class="string">&quot;/System/Library/Frameworks&quot;</span>,</span><br><span class="line">          <span class="string">&quot;/Library/Frameworks&quot;</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">&quot;compilerPath&quot;</span>: <span class="string">&quot;/usr/bin/clang&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;cStandard&quot;</span>: <span class="string">&quot;c11&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;cppStandard&quot;</span>: <span class="string">&quot;c++17&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;intelliSenseMode&quot;</span>: <span class="string">&quot;clang-x64&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="number">4</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>VSCode</category>
+      </categories>
+      <tags>
+        <tag>VSCode</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>VIPER架构落地IM</title>
     <url>/2020/10/11/VIPER%E6%9E%B6%E6%9E%84%E8%90%BD%E5%9C%B0%E5%88%B0IM/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="问题由来">问题由来</h2>
@@ -1923,25 +1942,6 @@ A[6] = 4</code></pre>
       </categories>
       <tags>
         <tag>Mac Develop</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>VSCode C++ 配置</title>
-    <url>/2020/10/03/VSCode-C/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h1 id="配置">配置</h1>
-<p>经常用 VSCode 来开发 C++，但是调试和配置每次都很头疼，现记录一下配置，备忘</p>
-<h2 id="tasks.json">tasks.json</h2>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="comment">// See https://go.microsoft.com/fwlink/?LinkId=733558</span></span><br><span class="line">    <span class="comment">// for the documentation about the tasks.json format</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;2.0.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;tasks&quot;</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;shell&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;label&quot;</span>: <span class="string">&quot;clang++ build active file&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;command&quot;</span>: <span class="string">&quot;/usr/bin/clang++&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;args&quot;</span>: [</span><br><span class="line">          <span class="string">&quot;-std=c++17&quot;</span>,</span><br><span class="line">          <span class="string">&quot;-stdlib=libc++&quot;</span>,</span><br><span class="line">          <span class="string">&quot;-g&quot;</span>,</span><br><span class="line">          <span class="comment">// &quot;$&#123;workspaceFolder&#125;/*.cpp&quot;,</span></span><br><span class="line">          <span class="string">&quot;$&#123;file&#125;&quot;</span>,</span><br><span class="line">          <span class="string">&quot;-o&quot;</span>,</span><br><span class="line">          <span class="string">&quot;$&#123;fileDirname&#125;/$&#123;fileBasenameNoExtension&#125;&quot;</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">&quot;options&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;cwd&quot;</span>: <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;problemMatcher&quot;</span>: [<span class="string">&quot;$gcc&quot;</span>],</span><br><span class="line">        <span class="attr">&quot;group&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;kind&quot;</span>: <span class="string">&quot;build&quot;</span>,</span><br><span class="line">          <span class="attr">&quot;isDefault&quot;</span>: <span class="literal">true</span></span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<h2 id="launch.json">launch.json</h2>
-<p>build and debug <figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.2.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;C++ - Build and debug active file&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;cppdbg&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;request&quot;</span>: <span class="string">&quot;launch&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;program&quot;</span>: <span class="string">&quot;$&#123;fileDirname&#125;/$&#123;fileBasenameNoExtension&#125;&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;args&quot;</span>: [],</span><br><span class="line">            <span class="attr">&quot;stopAtEntry&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">            <span class="attr">&quot;cwd&quot;</span>: <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;environment&quot;</span>: [],</span><br><span class="line">            <span class="attr">&quot;externalConsole&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">            <span class="attr">&quot;MIMode&quot;</span>: <span class="string">&quot;lldb&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;preLaunchTask&quot;</span>: <span class="string">&quot;clang++ build active file&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;setupCommands&quot;</span>: [</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;Enable pretty-printing for gdb&quot;</span>,</span><br><span class="line">                    <span class="attr">&quot;text&quot;</span>: <span class="string">&quot;-enable-pretty-printing&quot;</span>,</span><br><span class="line">                    <span class="attr">&quot;ignoreFailures&quot;</span>: <span class="literal">true</span></span><br><span class="line">                &#125;</span><br><span class="line">            ],</span><br><span class="line">          &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="c_cpp_cofiguration.json">c_cpp_cofiguration.json</h2>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Mac&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;includePath&quot;</span>: [<span class="string">&quot;$&#123;workspaceFolder&#125;/**&quot;</span>, <span class="string">&quot;/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/&quot;</span>],</span><br><span class="line">        <span class="attr">&quot;defines&quot;</span>: [],</span><br><span class="line">        <span class="attr">&quot;macFrameworkPath&quot;</span>: [</span><br><span class="line">          <span class="string">&quot;/System/Library/Frameworks&quot;</span>,</span><br><span class="line">          <span class="string">&quot;/Library/Frameworks&quot;</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">&quot;compilerPath&quot;</span>: <span class="string">&quot;/usr/bin/clang&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;cStandard&quot;</span>: <span class="string">&quot;c11&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;cppStandard&quot;</span>: <span class="string">&quot;c++17&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;intelliSenseMode&quot;</span>: <span class="string">&quot;clang-x64&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="number">4</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>VSCode</category>
-      </categories>
-      <tags>
-        <tag>VSCode</tag>
       </tags>
   </entry>
   <entry>
