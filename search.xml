@@ -1,47 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Basic Calculator</title>
-    <url>/2020/06/12/BasicCalculator/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://leetcode.com/problems/basic-calculator/">Basic Calculator</a> Implement a basic calculator to evaluate a simple expression string.</p>
-<p>The expression string may contain open ( and closing parentheses ), the plus + or minus sign -, non-negative integers and empty spaces .</p>
-<p>Example 1: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: <span class="string">&quot;1 + 1&quot;</span></span><br><span class="line">Output: 2</span><br></pre></td></tr></table></figure></p>
-<p>Example 2: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: <span class="string">&quot; 2-1 + 2 &quot;</span></span><br><span class="line">Output: 3</span><br></pre></td></tr></table></figure></p>
-<p>Example 3: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: <span class="string">&quot;(1+(4+5+2)-3)+(6+8)&quot;</span></span><br><span class="line">Output: 23</span><br></pre></td></tr></table></figure></p>
-<p>Note: You may assume that the given expression is always valid. Do not use the eval built-in library function.</p>
-<a id="more"></a>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="思路">思路</h3>
-<ul>
-<li>看到这种模式肯定要用到栈 <code>stack</code></li>
-<li>会有括号的处理，这块可能会复杂点，因为有可能会导致计算优先级改变。</li>
-<li>说白了就是将整个过程看为求和，每个数分配一个操作符，用来求和</li>
-<li>分析例子可以知道 &gt; * 每一个数字都会消耗掉一个符号(+、-) &gt; <em> 每一个数字都会产生一个新的符号(+, -) &gt; </em> 每一个 <code>(</code> 都会复制当前的符号，这样的话他就能给该操作范围内的第一个数用， &gt; * 每一个 <code>)</code> 都会关闭当前的操作范围，因此会丢弃掉当前的符号</li>
-</ul>
-<h2 id="代码">代码</h2>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 2 sign</span></span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">sign</span><span class="params">(<span class="number">2</span>, <span class="number">1</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length();i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = s[i];</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">isdigit</span>(c)) &#123;</span><br><span class="line">                <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">while</span> (i &lt; s.size() &amp;&amp; <span class="built_in">isdigit</span>(s[i]))</span><br><span class="line">                    n = n * <span class="number">10</span> + (s[i++] - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">                ans += sign.back() * n;</span><br><span class="line">                sign.pop_back();</span><br><span class="line">                i--;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                sign.pop_back();</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27; &#x27;</span>) &#123;</span><br><span class="line">                sign.push_back(sign.back() * (c == <span class="string">&#x27;-&#x27;</span> ? <span class="number">-1</span> : <span class="number">1</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="例子">例子</h2>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"> remaining   sign <span class="built_in">stack</span>      total</span><br><span class="line"><span class="number">3</span>-(<span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">1</span>]            <span class="number">0</span></span><br><span class="line"> -(<span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>]               <span class="number">3</span></span><br><span class="line">  (<span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>]           <span class="number">3</span></span><br><span class="line">   <span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]       <span class="number">3</span></span><br><span class="line">    +(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>]           <span class="number">1</span></span><br><span class="line">     (<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]       <span class="number">1</span></span><br><span class="line">      <span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>]   <span class="number">1</span></span><br><span class="line">       <span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]      <span class="number">-8</span></span><br><span class="line">        <span class="number">4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>, <span class="number">1</span>]   <span class="number">-8</span></span><br><span class="line">         ))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]      <span class="number">-4</span></span><br><span class="line">          )   [<span class="number">1</span>, <span class="number">-1</span>]          <span class="number">-4</span></span><br><span class="line">              [<span class="number">1</span>]              <span class="number">-4</span></span><br></pre></td></tr></table></figure>
-<h2 id="另一种解法">另一种解法</h2>
-<h3 id="思路-1">思路</h3>
-<ul>
-<li>括号内优先计算</li>
-<li>碰到 <code>(</code> ,将计算结果和操作符入栈</li>
-<li>碰到数字就带着符号计算结果。</li>
-</ul>
-<h3 id="代码-1">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> l = s.length();</span><br><span class="line">        <span class="keyword">int</span> sign = <span class="number">1</span>, ans = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; stk_;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; l; i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = s[i];</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">isdigit</span>(c)) &#123;</span><br><span class="line">                <span class="keyword">int</span> d = c - <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">                <span class="keyword">while</span> (i+<span class="number">1</span> &lt; l &amp;&amp; <span class="built_in">isdigit</span>(s[i+<span class="number">1</span>])) &#123;</span><br><span class="line">                    d = d * <span class="number">10</span> + (s[++i] - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                ans += d * sign;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;+&#x27;</span> || c == <span class="string">&#x27;-&#x27;</span>) &#123;</span><br><span class="line">                sign = c == <span class="string">&#x27;+&#x27;</span> ? <span class="number">1</span> : <span class="number">-1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                stk_.push(ans);</span><br><span class="line">                stk_.push(sign);</span><br><span class="line">                ans = <span class="number">0</span>;</span><br><span class="line">                sign = <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;)&#x27;</span>) &#123;</span><br><span class="line">                ans *= stk_.top(); stk_.pop();</span><br><span class="line">                ans += stk_.top(); stk_.pop();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Hard</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>AddTwoNumber</title>
     <url>/2019/11/22/AddTwoNumber/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -107,34 +66,44 @@
       </tags>
   </entry>
   <entry>
-    <title>BinaryGap</title>
-    <url>/2020/10/11/BinaryGap/</url>
+    <title>Basic Calculator</title>
+    <url>/2020/06/12/BasicCalculator/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://app.codility.com/demo/results/trainingUFUBUW-TAQ/">BinaryGap</a> A binary gap within a positive integer N is any maximal sequence of consecutive zeros that is surrounded by ones at both ends in the binary representation of N.</p>
-<p>For example, number 9 has binary representation 1001 and contains a binary gap of length 2. The number 529 has binary representation 1000010001 and contains two binary gaps: one of length 4 and one of length 3. The number 20 has binary representation 10100 and contains one binary gap of length 1. The number 15 has binary representation 1111 and has no binary gaps. The number 32 has binary representation 100000 and has no binary gaps.</p>
-<p>Write a function:</p>
-<p>int solution(int N);</p>
-<p>that, given a positive integer N, returns the length of its longest binary gap. The function should return 0 if N doesn't contain a binary gap.</p>
-<p>For example, given N = 1041 the function should return 5, because N has binary representation 10000010001 and so its longest binary gap is of length 5. Given N = 32 the function should return 0, because N has binary representation '100000' and thus no binary gaps.</p>
-<p>Write an efficient algorithm for the following assumptions:</p>
-<p>N is an integer within the range [1..2,147,483,647]. Copyright 2009–2020 by Codility Limited. All Rights Reserved. Unauthorized copying, publication or disclosure prohibited.</p>
+<p><a href="https://leetcode.com/problems/basic-calculator/">Basic Calculator</a> Implement a basic calculator to evaluate a simple expression string.</p>
+<p>The expression string may contain open ( and closing parentheses ), the plus + or minus sign -, non-negative integers and empty spaces .</p>
+<p>Example 1: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: <span class="string">&quot;1 + 1&quot;</span></span><br><span class="line">Output: 2</span><br></pre></td></tr></table></figure></p>
+<p>Example 2: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: <span class="string">&quot; 2-1 + 2 &quot;</span></span><br><span class="line">Output: 3</span><br></pre></td></tr></table></figure></p>
+<p>Example 3: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: <span class="string">&quot;(1+(4+5+2)-3)+(6+8)&quot;</span></span><br><span class="line">Output: 23</span><br></pre></td></tr></table></figure></p>
+<p>Note: You may assume that the given expression is always valid. Do not use the eval built-in library function.</p>
 <a id="more"></a>
 <h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
+<h3 id="思路">思路</h3>
 <ul>
-<li>给定十进制数字，求最大的二进制的 <code>gap</code>。</li>
-<li><code>gap</code> 必须是在两个 1 之间</li>
+<li>看到这种模式肯定要用到栈 <code>stack</code></li>
+<li>会有括号的处理，这块可能会复杂点，因为有可能会导致计算优先级改变。</li>
+<li>说白了就是将整个过程看为求和，每个数分配一个操作符，用来求和</li>
+<li>分析例子可以知道 &gt; * 每一个数字都会消耗掉一个符号(+、-) &gt; <em> 每一个数字都会产生一个新的符号(+, -) &gt; </em> 每一个 <code>(</code> 都会复制当前的符号，这样的话他就能给该操作范围内的第一个数用， &gt; * 每一个 <code>)</code> 都会关闭当前的操作范围，因此会丢弃掉当前的符号</li>
 </ul>
-<h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">solution</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>, count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">bool</span> found = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">while</span> (N) &#123;</span><br><span class="line">        <span class="keyword">while</span> (N &amp;&amp; (N &amp; <span class="number">1</span>)) &#123;</span><br><span class="line">            found = <span class="literal">true</span>;</span><br><span class="line">            N &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (N &amp;&amp; !(N &amp; <span class="number">1</span>)) &#123;</span><br><span class="line">            count++;</span><br><span class="line">            N &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (found)</span><br><span class="line">            ans = max(ans, count);</span><br><span class="line">        count = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p><code>O(N)</code></p>
+<h2 id="代码">代码</h2>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 2 sign</span></span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">sign</span><span class="params">(<span class="number">2</span>, <span class="number">1</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length();i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = s[i];</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">isdigit</span>(c)) &#123;</span><br><span class="line">                <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">while</span> (i &lt; s.size() &amp;&amp; <span class="built_in">isdigit</span>(s[i]))</span><br><span class="line">                    n = n * <span class="number">10</span> + (s[i++] - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">                ans += sign.back() * n;</span><br><span class="line">                sign.pop_back();</span><br><span class="line">                i--;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                sign.pop_back();</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27; &#x27;</span>) &#123;</span><br><span class="line">                sign.push_back(sign.back() * (c == <span class="string">&#x27;-&#x27;</span> ? <span class="number">-1</span> : <span class="number">1</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="例子">例子</h2>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"> remaining   sign <span class="built_in">stack</span>      total</span><br><span class="line"><span class="number">3</span>-(<span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">1</span>]            <span class="number">0</span></span><br><span class="line"> -(<span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>]               <span class="number">3</span></span><br><span class="line">  (<span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>]           <span class="number">3</span></span><br><span class="line">   <span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]       <span class="number">3</span></span><br><span class="line">    +(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>]           <span class="number">1</span></span><br><span class="line">     (<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]       <span class="number">1</span></span><br><span class="line">      <span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>]   <span class="number">1</span></span><br><span class="line">       <span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]      <span class="number">-8</span></span><br><span class="line">        <span class="number">4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>, <span class="number">1</span>]   <span class="number">-8</span></span><br><span class="line">         ))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]      <span class="number">-4</span></span><br><span class="line">          )   [<span class="number">1</span>, <span class="number">-1</span>]          <span class="number">-4</span></span><br><span class="line">              [<span class="number">1</span>]              <span class="number">-4</span></span><br></pre></td></tr></table></figure>
+<h2 id="另一种解法">另一种解法</h2>
+<h3 id="思路-1">思路</h3>
+<ul>
+<li>括号内优先计算</li>
+<li>碰到 <code>(</code> ,将计算结果和操作符入栈</li>
+<li>碰到数字就带着符号计算结果。</li>
+</ul>
+<h3 id="代码-1">代码</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> l = s.length();</span><br><span class="line">        <span class="keyword">int</span> sign = <span class="number">1</span>, ans = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; stk_;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; l; i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = s[i];</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">isdigit</span>(c)) &#123;</span><br><span class="line">                <span class="keyword">int</span> d = c - <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">                <span class="keyword">while</span> (i+<span class="number">1</span> &lt; l &amp;&amp; <span class="built_in">isdigit</span>(s[i+<span class="number">1</span>])) &#123;</span><br><span class="line">                    d = d * <span class="number">10</span> + (s[++i] - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                ans += d * sign;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;+&#x27;</span> || c == <span class="string">&#x27;-&#x27;</span>) &#123;</span><br><span class="line">                sign = c == <span class="string">&#x27;+&#x27;</span> ? <span class="number">1</span> : <span class="number">-1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                stk_.push(ans);</span><br><span class="line">                stk_.push(sign);</span><br><span class="line">                ans = <span class="number">0</span>;</span><br><span class="line">                sign = <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;)&#x27;</span>) &#123;</span><br><span class="line">                ans *= stk_.top(); stk_.pop();</span><br><span class="line">                ans += stk_.top(); stk_.pop();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
-        <category>Codility</category>
+        <category>LeetCode</category>
       </categories>
       <tags>
-        <tag>Codility</tag>
+        <tag>LeetCode</tag>
+        <tag>Hard</tag>
       </tags>
   </entry>
   <entry>
@@ -170,33 +139,34 @@
       </tags>
   </entry>
   <entry>
-    <title>位操作</title>
-    <url>/2020/08/11/BitManupulate/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p><a id="more"></a></p>
-<h1 id="位操作总结">位操作总结</h1>
-<p>基本上位操作就那么几个:</p>
-<h2 id="异或的特性">异或的特性</h2>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">x ^ <span class="number">0</span> = x</span><br><span class="line"></span><br><span class="line">x ^ <span class="number">11111</span>……<span class="number">1111</span> = ~x</span><br><span class="line"></span><br><span class="line">x ^ (~x) = <span class="number">11111</span>……<span class="number">1111</span></span><br><span class="line"></span><br><span class="line">x ^ x = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">a ^ b = c =&gt; a ^ c = b =&gt; b ^ c = a (交换律) a ^ b ^ c = a ^ (b ^ c) = (a ^ b）^ c (结合律)</span><br></pre></td></tr></table></figure>
-<h2 id="构造特殊的mask">构造特殊的Mask</h2>
+    <title>BinaryGap</title>
+    <url>/2020/10/11/BinaryGap/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
+<p><a href="https://app.codility.com/demo/results/trainingUFUBUW-TAQ/">BinaryGap</a> A binary gap within a positive integer N is any maximal sequence of consecutive zeros that is surrounded by ones at both ends in the binary representation of N.</p>
+<p>For example, number 9 has binary representation 1001 and contains a binary gap of length 2. The number 529 has binary representation 1000010001 and contains two binary gaps: one of length 4 and one of length 3. The number 20 has binary representation 10100 and contains one binary gap of length 1. The number 15 has binary representation 1111 and has no binary gaps. The number 32 has binary representation 100000 and has no binary gaps.</p>
+<p>Write a function:</p>
+<p>int solution(int N);</p>
+<p>that, given a positive integer N, returns the length of its longest binary gap. The function should return 0 if N doesn't contain a binary gap.</p>
+<p>For example, given N = 1041 the function should return 5, because N has binary representation 10000010001 and so its longest binary gap is of length 5. Given N = 32 the function should return 0, because N has binary representation '100000' and thus no binary gaps.</p>
+<p>Write an efficient algorithm for the following assumptions:</p>
+<p>N is an integer within the range [1..2,147,483,647]. Copyright 2009–2020 by Codility Limited. All Rights Reserved. Unauthorized copying, publication or disclosure prohibited.</p>
+<a id="more"></a>
+<h2 id="解题报告">解题报告</h2>
+<h3 id="理解题意">理解题意</h3>
 <ul>
-<li>将 <code>x</code> 最右边的 <code>n</code> 位清零， <code>x &amp; ( ~0 &lt;&lt; n )</code></li>
-<li>获取 <code>x</code> 的第 <code>n</code> 位值(0 或者 1)，<code>(x &gt;&gt; n) &amp; 1</code></li>
-<li>获取 <code>x</code> 的第 <code>n</code> 位的幂值，<code>x &amp; (1 &lt;&lt; (n - 1))</code></li>
-<li>仅将第 <code>n</code> 位置为 <code>1</code>，<code>x | (1 &lt;&lt; n)</code></li>
-<li>仅将第 <code>n</code> 位置为 <code>0</code>，<code>x &amp; (~(1 &lt;&lt; n))</code></li>
-<li>将 <code>x</code> 最⾼位⾄第 <code>n</code> 位(含)清零，<code>x &amp; ((1 &lt;&lt; n) - 1)</code></li>
-<li>将第 <code>n</code> 位⾄第 <code>0</code> 位(含)清零，<code>x &amp; (~((1 &lt;&lt; (n + 1)) - 1)</code></li>
+<li>给定十进制数字，求最大的二进制的 <code>gap</code>。</li>
+<li><code>gap</code> 必须是在两个 1 之间</li>
 </ul>
-<h2 id="section"></h2>
-<p><code>X &amp; 1 == 1</code> 判断是否是奇数(偶数) <code>X &amp; = (X - 1)</code> 将最低位(LSB)的 1 清零 <code>X &amp; -X</code> 得到最低位(LSB)的 1</p>
-<p><code>X &amp; ~X = 0</code></p>
+<h3 id="代码">代码</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">solution</span><span class="params">(<span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>, count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">bool</span> found = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">while</span> (N) &#123;</span><br><span class="line">        <span class="keyword">while</span> (N &amp;&amp; (N &amp; <span class="number">1</span>)) &#123;</span><br><span class="line">            found = <span class="literal">true</span>;</span><br><span class="line">            N &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (N &amp;&amp; !(N &amp; <span class="number">1</span>)) &#123;</span><br><span class="line">            count++;</span><br><span class="line">            N &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (found)</span><br><span class="line">            ans = max(ans, count);</span><br><span class="line">        count = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="时间复杂度">时间复杂度</h3>
+<p><code>O(N)</code></p>
 ]]></content>
       <categories>
-        <category>LeetCode</category>
+        <category>Codility</category>
       </categories>
       <tags>
-        <tag>LeetCode</tag>
-        <tag>Bit Manupulate</tag>
+        <tag>Codility</tag>
       </tags>
   </entry>
   <entry>
@@ -247,6 +217,36 @@
       <tags>
         <tag>LeetCode</tag>
         <tag>Medium</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>位操作</title>
+    <url>/2020/08/11/BitManupulate/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p><a id="more"></a></p>
+<h1 id="位操作总结">位操作总结</h1>
+<p>基本上位操作就那么几个:</p>
+<h2 id="异或的特性">异或的特性</h2>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">x ^ <span class="number">0</span> = x</span><br><span class="line"></span><br><span class="line">x ^ <span class="number">11111</span>……<span class="number">1111</span> = ~x</span><br><span class="line"></span><br><span class="line">x ^ (~x) = <span class="number">11111</span>……<span class="number">1111</span></span><br><span class="line"></span><br><span class="line">x ^ x = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">a ^ b = c =&gt; a ^ c = b =&gt; b ^ c = a (交换律) a ^ b ^ c = a ^ (b ^ c) = (a ^ b）^ c (结合律)</span><br></pre></td></tr></table></figure>
+<h2 id="构造特殊的mask">构造特殊的Mask</h2>
+<ul>
+<li>将 <code>x</code> 最右边的 <code>n</code> 位清零， <code>x &amp; ( ~0 &lt;&lt; n )</code></li>
+<li>获取 <code>x</code> 的第 <code>n</code> 位值(0 或者 1)，<code>(x &gt;&gt; n) &amp; 1</code></li>
+<li>获取 <code>x</code> 的第 <code>n</code> 位的幂值，<code>x &amp; (1 &lt;&lt; (n - 1))</code></li>
+<li>仅将第 <code>n</code> 位置为 <code>1</code>，<code>x | (1 &lt;&lt; n)</code></li>
+<li>仅将第 <code>n</code> 位置为 <code>0</code>，<code>x &amp; (~(1 &lt;&lt; n))</code></li>
+<li>将 <code>x</code> 最⾼位⾄第 <code>n</code> 位(含)清零，<code>x &amp; ((1 &lt;&lt; n) - 1)</code></li>
+<li>将第 <code>n</code> 位⾄第 <code>0</code> 位(含)清零，<code>x &amp; (~((1 &lt;&lt; (n + 1)) - 1)</code></li>
+</ul>
+<h2 id="section"></h2>
+<p><code>X &amp; 1 == 1</code> 判断是否是奇数(偶数) <code>X &amp; = (X - 1)</code> 将最低位(LSB)的 1 清零 <code>X &amp; -X</code> 得到最低位(LSB)的 1</p>
+<p><code>X &amp; ~X = 0</code></p>
+]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>LeetCode</tag>
+        <tag>Bit Manupulate</tag>
       </tags>
   </entry>
   <entry>
@@ -1040,6 +1040,64 @@ K = 4</code></pre>
       </tags>
   </entry>
   <entry>
+    <title>MaxCounter</title>
+    <url>/2020/10/06/MaxCounter/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
+<p><a href="https://app.codility.com/demo/results/training7GBQ3S-T9U/">MaxCounters</a> You are given N counters, initially set to 0, and you have two possible operations on them:</p>
+<p>increase(X) − counter X is increased by 1, max counter − all counters are set to the maximum value of any counter. A non-empty array A of M integers is given. This array represents consecutive operations:</p>
+<p>if A[K] = X, such that 1 ≤ X ≤ N, then operation K is increase(X), if A[K] = N + 1 then operation K is max counter. For example, given integer N = 5 and array A such that:</p>
+<pre><code>A[0] = 3
+A[1] = 4
+A[2] = 4
+A[3] = 6
+A[4] = 1
+A[5] = 4
+A[6] = 4</code></pre>
+<p>the values of the counters after each consecutive operation will be:</p>
+<pre><code>(0, 0, 1, 0, 0)
+(0, 0, 1, 1, 0)
+(0, 0, 1, 2, 0)
+(2, 2, 2, 2, 2)
+(3, 2, 2, 2, 2)
+(3, 2, 2, 3, 2)
+(3, 2, 2, 4, 2)</code></pre>
+<p>The goal is to calculate the value of every counter after all operations.</p>
+<p>Write a function:</p>
+<p>vector<int> solution(int N, vector<int> &amp;A);</p>
+<p>that, given an integer N and a non-empty array A consisting of M integers, returns a sequence of integers representing the values of the counters.</p>
+<p>Result array should be returned as a vector of integers.</p>
+<p>For example, given:</p>
+<pre><code>A[0] = 3
+A[1] = 4
+A[2] = 4
+A[3] = 6
+A[4] = 1
+A[5] = 4
+A[6] = 4</code></pre>
+<p>the function should return [3, 2, 2, 4, 2], as explained above.</p>
+<p>Write an efficient algorithm for the following assumptions:</p>
+<p>N and M are integers within the range [1..100,000]; each element of array A is an integer within the range [1..N + 1].</p>
+<a id="more"></a>
+<h2 id="解题报告">解题报告</h2>
+<h3 id="理解题意">理解题意</h3>
+<ul>
+<li>根据他给的规则，填充即可。</li>
+<li>但他有个恶心的地方就是有个规则是将数组的全部内容设置为最大值。</li>
+<li>如果嵌套循环 O(N^2) 肯定超时，那肯定是需要记下来最大的值。</li>
+</ul>
+<h3 id="代码">代码</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// you can use includes, for example:</span></span><br><span class="line"><span class="comment">// #include &lt;algorithm&gt;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="comment">// you can write to stdout for debugging purposes, e.g.</span></span><br><span class="line"><span class="comment">// cout &lt;&lt; &quot;this is a debug message&quot; &lt;&lt; endl;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">solution</span><span class="params">(<span class="keyword">int</span> N, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// write your code in C++14 (g++ 6.2.0)</span></span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">ans</span><span class="params">(N, <span class="number">0</span>)</span></span>;</span><br><span class="line">    <span class="keyword">int</span> curMax = <span class="number">0</span>, baseValue = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; A.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> idx = A[i]<span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">if</span> (A[i] &gt;=<span class="number">1</span> &amp;&amp; A[i] &lt;= N)&#123;</span><br><span class="line">            ans[idx] = max(baseValue, ans[idx]) + <span class="number">1</span>;</span><br><span class="line">            curMax = max(curMax, ans[idx]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (A[i] == N+<span class="number">1</span>) &#123;</span><br><span class="line">            baseValue = curMax;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ans[i] &lt; baseValue) &#123;</span><br><span class="line">            ans[i] = baseValue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="时间复杂度">时间复杂度</h3>
+<p><code>O(N)</code></p>
+]]></content>
+      <categories>
+        <category>Codility</category>
+      </categories>
+      <tags>
+        <tag>Codility</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MedianOfTwoSortedArrays</title>
     <url>/2019/11/23/MedianOfTwoSortedArrays/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -1197,64 +1255,6 @@ K = 4</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>MaxCounter</title>
-    <url>/2020/10/06/MaxCounter/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://app.codility.com/demo/results/training7GBQ3S-T9U/">MaxCounters</a> You are given N counters, initially set to 0, and you have two possible operations on them:</p>
-<p>increase(X) − counter X is increased by 1, max counter − all counters are set to the maximum value of any counter. A non-empty array A of M integers is given. This array represents consecutive operations:</p>
-<p>if A[K] = X, such that 1 ≤ X ≤ N, then operation K is increase(X), if A[K] = N + 1 then operation K is max counter. For example, given integer N = 5 and array A such that:</p>
-<pre><code>A[0] = 3
-A[1] = 4
-A[2] = 4
-A[3] = 6
-A[4] = 1
-A[5] = 4
-A[6] = 4</code></pre>
-<p>the values of the counters after each consecutive operation will be:</p>
-<pre><code>(0, 0, 1, 0, 0)
-(0, 0, 1, 1, 0)
-(0, 0, 1, 2, 0)
-(2, 2, 2, 2, 2)
-(3, 2, 2, 2, 2)
-(3, 2, 2, 3, 2)
-(3, 2, 2, 4, 2)</code></pre>
-<p>The goal is to calculate the value of every counter after all operations.</p>
-<p>Write a function:</p>
-<p>vector<int> solution(int N, vector<int> &amp;A);</p>
-<p>that, given an integer N and a non-empty array A consisting of M integers, returns a sequence of integers representing the values of the counters.</p>
-<p>Result array should be returned as a vector of integers.</p>
-<p>For example, given:</p>
-<pre><code>A[0] = 3
-A[1] = 4
-A[2] = 4
-A[3] = 6
-A[4] = 1
-A[5] = 4
-A[6] = 4</code></pre>
-<p>the function should return [3, 2, 2, 4, 2], as explained above.</p>
-<p>Write an efficient algorithm for the following assumptions:</p>
-<p>N and M are integers within the range [1..100,000]; each element of array A is an integer within the range [1..N + 1].</p>
-<a id="more"></a>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li>根据他给的规则，填充即可。</li>
-<li>但他有个恶心的地方就是有个规则是将数组的全部内容设置为最大值。</li>
-<li>如果嵌套循环 O(N^2) 肯定超时，那肯定是需要记下来最大的值。</li>
-</ul>
-<h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// you can use includes, for example:</span></span><br><span class="line"><span class="comment">// #include &lt;algorithm&gt;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="comment">// you can write to stdout for debugging purposes, e.g.</span></span><br><span class="line"><span class="comment">// cout &lt;&lt; &quot;this is a debug message&quot; &lt;&lt; endl;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">solution</span><span class="params">(<span class="keyword">int</span> N, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// write your code in C++14 (g++ 6.2.0)</span></span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">ans</span><span class="params">(N, <span class="number">0</span>)</span></span>;</span><br><span class="line">    <span class="keyword">int</span> curMax = <span class="number">0</span>, baseValue = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; A.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> idx = A[i]<span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">if</span> (A[i] &gt;=<span class="number">1</span> &amp;&amp; A[i] &lt;= N)&#123;</span><br><span class="line">            ans[idx] = max(baseValue, ans[idx]) + <span class="number">1</span>;</span><br><span class="line">            curMax = max(curMax, ans[idx]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (A[i] == N+<span class="number">1</span>) &#123;</span><br><span class="line">            baseValue = curMax;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (ans[i] &lt; baseValue) &#123;</span><br><span class="line">            ans[i] = baseValue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p><code>O(N)</code></p>
-]]></content>
-      <categories>
-        <category>Codility</category>
-      </categories>
-      <tags>
-        <tag>Codility</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MissingInteger</title>
     <url>/2020/10/06/MissingInteger/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -1354,6 +1354,35 @@ A[6] = 4</code></pre>
       </categories>
   </entry>
   <entry>
+    <title>OddOccurrencesInArray</title>
+    <url>/2020/06/29/OddOccurrencesInArray/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
+<p><a href="https://app.codility.com/demo/results/trainingFNUJ23-65K/">OddOccurrencesInArray</a> A non-empty array A consisting of N integers is given. The array contains an odd number of elements, and each element of the array can be paired with another element that has the same value, except for one element that is left unpaired.</p>
+<p>For example, in array A such that:</p>
+<p>A[0] = 9 A[1] = 3 A[2] = 9 A[3] = 3 A[4] = 9 A[5] = 7 A[6] = 9 the elements at indexes 0 and 2 have value 9, the elements at indexes 1 and 3 have value 3, the elements at indexes 4 and 6 have value 9, the element at index 5 has value 7 and is unpaired. Write a function:</p>
+<p>int solution(vector<int> &amp;A);</p>
+<p>that, given an array A consisting of N integers fulfilling the above conditions, returns the value of the unpaired element.</p>
+<p>For example, given array A such that:</p>
+<p>A[0] = 9 A[1] = 3 A[2] = 9 A[3] = 3 A[4] = 9 A[5] = 7 A[6] = 9 the function should return 7, as explained in the example above.</p>
+<p>Write an efficient algorithm for the following assumptions:</p>
+<p>N is an odd integer within the range [1..1,000,000]; each element of array A is an integer within the range [1..1,000,000,000]; all but one of the values in A occur an even number of times. <a id="more"></a></p>
+<h2 id="解题报告">解题报告</h2>
+<h3 id="理解题意">理解题意</h3>
+<ul>
+<li>数组内有多个元素，只有一个是出现一次，其余的都是成对出现。求该单一数字是什么</li>
+</ul>
+<h3 id="代码">代码</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">solution</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// write your code in C++14 (g++ 6.2.0)</span></span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; A.size(); i++) &#123;</span><br><span class="line">        ans ^= A[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Codility</category>
+      </categories>
+      <tags>
+        <tag>Medium</tag>
+        <tag>Codility</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Palindrome Paritioning III</title>
     <url>/2019/12/04/ParlindromPartition-III/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -1432,35 +1461,6 @@ A[6] = 4</code></pre>
       <tags>
         <tag>LeetCode</tag>
         <tag>Hard</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>OddOccurrencesInArray</title>
-    <url>/2020/06/29/OddOccurrencesInArray/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://app.codility.com/demo/results/trainingFNUJ23-65K/">OddOccurrencesInArray</a> A non-empty array A consisting of N integers is given. The array contains an odd number of elements, and each element of the array can be paired with another element that has the same value, except for one element that is left unpaired.</p>
-<p>For example, in array A such that:</p>
-<p>A[0] = 9 A[1] = 3 A[2] = 9 A[3] = 3 A[4] = 9 A[5] = 7 A[6] = 9 the elements at indexes 0 and 2 have value 9, the elements at indexes 1 and 3 have value 3, the elements at indexes 4 and 6 have value 9, the element at index 5 has value 7 and is unpaired. Write a function:</p>
-<p>int solution(vector<int> &amp;A);</p>
-<p>that, given an array A consisting of N integers fulfilling the above conditions, returns the value of the unpaired element.</p>
-<p>For example, given array A such that:</p>
-<p>A[0] = 9 A[1] = 3 A[2] = 9 A[3] = 3 A[4] = 9 A[5] = 7 A[6] = 9 the function should return 7, as explained in the example above.</p>
-<p>Write an efficient algorithm for the following assumptions:</p>
-<p>N is an odd integer within the range [1..1,000,000]; each element of array A is an integer within the range [1..1,000,000,000]; all but one of the values in A occur an even number of times. <a id="more"></a></p>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li>数组内有多个元素，只有一个是出现一次，其余的都是成对出现。求该单一数字是什么</li>
-</ul>
-<h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">solution</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// write your code in C++14 (g++ 6.2.0)</span></span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; A.size(); i++) &#123;</span><br><span class="line">        ans ^= A[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>Codility</category>
-      </categories>
-      <tags>
-        <tag>Medium</tag>
-        <tag>Codility</tag>
       </tags>
   </entry>
   <entry>
@@ -1567,6 +1567,52 @@ A[6] = 4</code></pre>
       </tags>
   </entry>
   <entry>
+    <title>Range Sum Query</title>
+    <url>/2020/07/11/RangeSumQuery/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="range-sum-query-immutable">Range Sum Query Immutable</h2>
+<p>Given an integer array nums, find the sum of the elements between indices i and j (i ≤ j), inclusive.</p>
+<p>Example: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Given nums = [-2, 0, 3, -5, 2, -1]</span><br><span class="line"></span><br><span class="line">sumRange(0, 2) -&gt; 1</span><br><span class="line">sumRange(2, 5) -&gt; -1</span><br><span class="line">sumRange(0, 5) -&gt; -3</span><br><span class="line">Note:</span><br><span class="line">You may assume that the array does not change.</span><br><span class="line">There are many calls to sumRange <span class="keyword">function</span>.</span><br></pre></td></tr></table></figure> <a id="more"></a></p>
+<h3 id="思路">思路</h3>
+<ul>
+<li>比较简单的 Range Sum Query，只要知道前缀和就可以计算出不变数组的任意区间的和。</li>
+</ul>
+<h3 id="代码">代码</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NumArray</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v_;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    NumArray(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums) &#123;</span><br><span class="line">        v_.push_back(nums[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> num:nums) &#123;</span><br><span class="line">            v_.push_back(v_.back() + num);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// O(n)</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">sumRange</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> v_[j+<span class="number">1</span>] - v_[i]; <span class="comment">// O(1)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="range-sum-query-2d---immutable">Range Sum Query 2D - Immutable</h2>
+<p>Given a 2D matrix matrix, find the sum of the elements inside the rectangle defined by its upper left corner (row1, col1) and lower right corner (row2, col2).</p>
+<p>Range Sum Query 2D The above rectangle (with the red border) is defined by (row1, col1) = (2, 1) and (row2, col2) = (4, 3), which contains sum = 8.</p>
+<p>Example:</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Given matrix = [</span><br><span class="line">  [<span class="number">3</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">2</span>],</span><br><span class="line">  [<span class="number">5</span>, <span class="number">6</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>],</span><br><span class="line">  [<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">5</span>],</span><br><span class="line">  [<span class="number">4</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">7</span>],</span><br><span class="line">  [<span class="number">1</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">5</span>]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">sumRegion(<span class="number">2</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">3</span>) -&gt; <span class="number">8</span></span><br><span class="line">sumRegion(<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>) -&gt; <span class="number">11</span></span><br><span class="line">sumRegion(<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">4</span>) -&gt; <span class="number">12</span></span><br></pre></td></tr></table></figure>
+<p>Note: You may assume that the matrix does not change. There are many calls to sumRegion function. You may assume that row1 ≤ row2 and col1 ≤ col2.</p>
+<h3 id="思路-1">思路</h3>
+<ul>
+<li>参考之前Range Sum Query 的思想，肯定是要提前计算出需要的数据，最后计算和相当于查表。</li>
+<li>那么 2D 数组如何计算使用类似的思想呢</li>
+<li>矩形区域的和相当于多个矩形区域进行叠加后减去重复计算的区域，如下图所示，小矩形区域可以看做三个以左上角（0，0）为顶点的矩形区域与大的矩形区域的操作后的结果 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> a <span class="number">2</span>D <span class="built_in">array</span> sum[row+<span class="number">1</span>][col+<span class="number">1</span>]</span><br><span class="line">sums[i+<span class="number">1</span>][j+<span class="number">1</span>] represents the sum of area from matrix[<span class="number">0</span>][<span class="number">0</span>] to matrix[i][j]</span><br><span class="line">(notice: we add additional blank row sums[<span class="number">0</span>][col+<span class="number">1</span>]=&#123;<span class="number">0</span>&#125; <span class="keyword">and</span> blank column sums[row+<span class="number">1</span>][<span class="number">0</span>]=&#123;<span class="number">0</span>&#125; to remove the edge <span class="keyword">case</span> checking), so, we can have the following definition</span><br><span class="line">+-----+-+-------+     +--------+-----+     +-----+---------+     +-----+--------+</span><br><span class="line">|     | |       |     |        |     |     |     |         |     |     |        |</span><br><span class="line">|     | |       |     |        |     |     |     |         |     |     |        |</span><br><span class="line">+-----+-+       |     +--------+     |     |     |         |     +-----+        |</span><br><span class="line">|     | |       |  =  |              |  +  |     |         |  -  |              |</span><br><span class="line">+-----+-+       |     |              |     +-----+         |     |              |</span><br><span class="line">|               |     |              |     |               |     |              |</span><br><span class="line">|               |     |              |     |               |     |              |</span><br><span class="line">+---------------+     +--------------+     +---------------+     +--------------+</span><br><span class="line"></span><br><span class="line">   sums[i][j]      =    sums[i<span class="number">-1</span>][j]    +     sums[i][j<span class="number">-1</span>]    -   sums[i<span class="number">-1</span>][j<span class="number">-1</span>]   +</span><br><span class="line"></span><br><span class="line">                        matrix[i<span class="number">-1</span>][j<span class="number">-1</span>]</span><br></pre></td></tr></table></figure></li>
+<li>因此使用同样的思路计算区域如下</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">+---------------+   +--------------+   +---------------+   +--------------+   +--------------+</span><br><span class="line">|               |   |         |    |   |   |           |   |         |    |   |   |          |</span><br><span class="line">|   (r1,c1)     |   |         |    |   |   |           |   |         |    |   |   |          |</span><br><span class="line">|   +------+    |   |         |    |   |   |           |   +---------+    |   +---+          |</span><br><span class="line">|   |      |    | = |         |    | - |   |           | - |      (r1,c2) | + |   (r1,c1)    |</span><br><span class="line">|   |      |    |   |         |    |   |   |           |   |              |   |              |</span><br><span class="line">|   +------+    |   +---------+    |   +---+           |   |              |   |              |</span><br><span class="line">|        (r2,c2)|   |       (r2,c2)|   |   (r2,c1)     |   |              |   |              |</span><br><span class="line">+---------------+   +--------------+   +---------------+   +--------------+   +--------------+</span><br></pre></td></tr></table></figure>
+<h3 id="代码-1">代码</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NumMatrix</span>&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; sum;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    NumMatrix(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; matrix) &#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> m = matrix.size();</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> n = m &gt; <span class="number">0</span> ? matrix[<span class="number">0</span>].size() : <span class="number">0</span>;</span><br><span class="line">        sum = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(m+<span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(n+<span class="number">1</span>, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++) &#123;</span><br><span class="line">                sum[i][j] = sum[i<span class="number">-1</span>][j<span class="number">-1</span>] + sum[i][j<span class="number">-1</span>] - sum[i<span class="number">-1</span>][j<span class="number">-1</span>] + matrix[i<span class="number">-1</span>][j<span class="number">-1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">sumRegion</span><span class="params">(<span class="keyword">int</span> row1, <span class="keyword">int</span> col1, <span class="keyword">int</span> row2, <span class="keyword">int</span> col2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sums[row2+<span class="number">1</span>][col2+<span class="number">1</span>] - sums[row2+<span class="number">1</span>][col1] - sums[row1][col2+<span class="number">1</span>] + sums[row1][col1];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="range-sum-query-mutable">Range Sum Query Mutable</h2>
+<p>Given an integer array nums, find the sum of the elements between indices i and j (i ≤ j), inclusive.</p>
+<p>The update(i, val) function modifies nums by updating the element at index i to val.</p>
+<p>Example: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Given nums = [1, 3, 5]</span><br><span class="line">-</span><br><span class="line">sumRange(0, 2) -&gt; 9</span><br><span class="line">update(1, 2)</span><br><span class="line">sumRange(0, 2) -&gt; 8</span><br></pre></td></tr></table></figure> Note:</p>
+<p>The array is only modifiable by the update function. You may assume the number of calls to update and sumRange function is distributed evenly.</p>
+<h3 id="fenwick-tree-binary-index-tree">Fenwick Tree (Binary Index Tree)</h3>
+<p>树状数组，我们需要两个数组来存储，原始数组和 bit 数组 * 假定 i 为左子节点，那么其父节点的坐标为 (i + lowbit(i)) * 假定 i 为右子节点，那么其父节点的坐标为 (i - lowbit(i)) * update(int i, int delta) --&gt; 更新前缀和数组中每一个受影响前缀和，从 i 到 最后一个位置 O (n) * query(int) --&gt; 直接返回 idx + 1 的前缀和 O(1) * 求 i 到 j 的前缀和 就可用 query(j+1) - query(i) 来计算 * 求和的基本思想，给定要求和的位置 i，可以用二级制表示法来分段求和，以 13 为例 13 = 2^3 + 2 ^2 + 2 ^ 0; * 因此 prefixSum(13) = Range(1, 8) + Range(9, 12) + Range(13) // Range(i, j) 表示 i 到 j 的数字求和 * arr = [1, 7, 3, 0, 5, 8, 3, 2, 6, 2, 1, 1, 4, 5] prefixSum(13) = RANGE(1, 8) + RANGE(9, 12) + RANGE(13, 13) = 29 + 10 + 4 = 43</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FenwickTree</span>&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; sum_;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="title">lowbit</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x &amp; (-x);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    FenwickTree(<span class="keyword">int</span> n) : sum(n+<span class="number">1</span>, <span class="number">0</span>) &#123; &#125;</span><br><span class="line">    <span class="comment">// 更新一个值，坐标 为 i，需要修改 bit 数组中涵盖了 原始数组 arr[i] 的值 --&gt;  下标 i 以及所有的父节点</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> delta)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; sum.size()) &#123;</span><br><span class="line">            sum_[i] += delta;</span><br><span class="line">            i += lowbit(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 区间求和，假定求 i --&gt; j 的数值之和，可以求 0 --&gt; i-1 , 0 --&gt; j，再相减</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> i)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            sum += sum_[i];</span><br><span class="line">            i -= lowbit(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 区间求和 和 更新数组 都是 O(logn)</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NumArray</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; nums_;</span><br><span class="line">    FenwickTree tree_;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    NumArray(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; nums): nums_(move(nums)), tree_(nums.size()) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums_.size(); i++) &#123;</span><br><span class="line">            tree_.update(i+<span class="number">1</span>, nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        tree_.update(i, val - nums[i]);</span><br><span class="line">        nums_[i] -= val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">sumQuery</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> tree_.query(j+<span class="number">1</span>) - tree_.query(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="segment-tree">Segment Tree</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SegmentNode</span>&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> start;</span><br><span class="line">    <span class="keyword">int</span> end;</span><br><span class="line">    <span class="keyword">int</span> sum;</span><br><span class="line">    SegmentNode *left;</span><br><span class="line">    SegmentNode *right;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    SegmentNode(<span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> sum, SegmentNode *left = <span class="literal">nullptr</span>, SegmentNode *right = <span class="literal">nullptr</span>):</span><br><span class="line">     start(start), end(end), sum(sum), left(left), right(right);</span><br><span class="line">    SegmentNode(<span class="keyword">const</span> SegmentNode&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    SegmentNode&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> SegmentNode&amp;) = <span class="keyword">delete</span>;</span><br><span class="line"></span><br><span class="line">    ~SegmentNode() &#123;</span><br><span class="line">        <span class="keyword">delete</span> left;</span><br><span class="line">        <span class="keyword">delete</span> right;</span><br><span class="line">        left = right = <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>LeetCode</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Single Number II</title>
     <url>/2020/05/30/SingleNumberII/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -1611,52 +1657,6 @@ A[6] = 4</code></pre>
       <tags>
         <tag>LeetCode</tag>
         <tag>Medium</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Range Sum Query</title>
-    <url>/2020/07/11/RangeSumQuery/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="range-sum-query-immutable">Range Sum Query Immutable</h2>
-<p>Given an integer array nums, find the sum of the elements between indices i and j (i ≤ j), inclusive.</p>
-<p>Example: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Given nums = [-2, 0, 3, -5, 2, -1]</span><br><span class="line"></span><br><span class="line">sumRange(0, 2) -&gt; 1</span><br><span class="line">sumRange(2, 5) -&gt; -1</span><br><span class="line">sumRange(0, 5) -&gt; -3</span><br><span class="line">Note:</span><br><span class="line">You may assume that the array does not change.</span><br><span class="line">There are many calls to sumRange <span class="keyword">function</span>.</span><br></pre></td></tr></table></figure> <a id="more"></a></p>
-<h3 id="思路">思路</h3>
-<ul>
-<li>比较简单的 Range Sum Query，只要知道前缀和就可以计算出不变数组的任意区间的和。</li>
-</ul>
-<h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NumArray</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v_;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    NumArray(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums) &#123;</span><br><span class="line">        v_.push_back(nums[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> num:nums) &#123;</span><br><span class="line">            v_.push_back(v_.back() + num);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// O(n)</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">sumRange</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> v_[j+<span class="number">1</span>] - v_[i]; <span class="comment">// O(1)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="range-sum-query-2d---immutable">Range Sum Query 2D - Immutable</h2>
-<p>Given a 2D matrix matrix, find the sum of the elements inside the rectangle defined by its upper left corner (row1, col1) and lower right corner (row2, col2).</p>
-<p>Range Sum Query 2D The above rectangle (with the red border) is defined by (row1, col1) = (2, 1) and (row2, col2) = (4, 3), which contains sum = 8.</p>
-<p>Example:</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">Given matrix = [</span><br><span class="line">  [<span class="number">3</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">2</span>],</span><br><span class="line">  [<span class="number">5</span>, <span class="number">6</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>],</span><br><span class="line">  [<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">5</span>],</span><br><span class="line">  [<span class="number">4</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">7</span>],</span><br><span class="line">  [<span class="number">1</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">5</span>]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">sumRegion(<span class="number">2</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">3</span>) -&gt; <span class="number">8</span></span><br><span class="line">sumRegion(<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>) -&gt; <span class="number">11</span></span><br><span class="line">sumRegion(<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">4</span>) -&gt; <span class="number">12</span></span><br></pre></td></tr></table></figure>
-<p>Note: You may assume that the matrix does not change. There are many calls to sumRegion function. You may assume that row1 ≤ row2 and col1 ≤ col2.</p>
-<h3 id="思路-1">思路</h3>
-<ul>
-<li>参考之前Range Sum Query 的思想，肯定是要提前计算出需要的数据，最后计算和相当于查表。</li>
-<li>那么 2D 数组如何计算使用类似的思想呢</li>
-<li>矩形区域的和相当于多个矩形区域进行叠加后减去重复计算的区域，如下图所示，小矩形区域可以看做三个以左上角（0，0）为顶点的矩形区域与大的矩形区域的操作后的结果 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> a <span class="number">2</span>D <span class="built_in">array</span> sum[row+<span class="number">1</span>][col+<span class="number">1</span>]</span><br><span class="line">sums[i+<span class="number">1</span>][j+<span class="number">1</span>] represents the sum of area from matrix[<span class="number">0</span>][<span class="number">0</span>] to matrix[i][j]</span><br><span class="line">(notice: we add additional blank row sums[<span class="number">0</span>][col+<span class="number">1</span>]=&#123;<span class="number">0</span>&#125; <span class="keyword">and</span> blank column sums[row+<span class="number">1</span>][<span class="number">0</span>]=&#123;<span class="number">0</span>&#125; to remove the edge <span class="keyword">case</span> checking), so, we can have the following definition</span><br><span class="line">+-----+-+-------+     +--------+-----+     +-----+---------+     +-----+--------+</span><br><span class="line">|     | |       |     |        |     |     |     |         |     |     |        |</span><br><span class="line">|     | |       |     |        |     |     |     |         |     |     |        |</span><br><span class="line">+-----+-+       |     +--------+     |     |     |         |     +-----+        |</span><br><span class="line">|     | |       |  =  |              |  +  |     |         |  -  |              |</span><br><span class="line">+-----+-+       |     |              |     +-----+         |     |              |</span><br><span class="line">|               |     |              |     |               |     |              |</span><br><span class="line">|               |     |              |     |               |     |              |</span><br><span class="line">+---------------+     +--------------+     +---------------+     +--------------+</span><br><span class="line"></span><br><span class="line">   sums[i][j]      =    sums[i<span class="number">-1</span>][j]    +     sums[i][j<span class="number">-1</span>]    -   sums[i<span class="number">-1</span>][j<span class="number">-1</span>]   +</span><br><span class="line"></span><br><span class="line">                        matrix[i<span class="number">-1</span>][j<span class="number">-1</span>]</span><br></pre></td></tr></table></figure></li>
-<li>因此使用同样的思路计算区域如下</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">+---------------+   +--------------+   +---------------+   +--------------+   +--------------+</span><br><span class="line">|               |   |         |    |   |   |           |   |         |    |   |   |          |</span><br><span class="line">|   (r1,c1)     |   |         |    |   |   |           |   |         |    |   |   |          |</span><br><span class="line">|   +------+    |   |         |    |   |   |           |   +---------+    |   +---+          |</span><br><span class="line">|   |      |    | = |         |    | - |   |           | - |      (r1,c2) | + |   (r1,c1)    |</span><br><span class="line">|   |      |    |   |         |    |   |   |           |   |              |   |              |</span><br><span class="line">|   +------+    |   +---------+    |   +---+           |   |              |   |              |</span><br><span class="line">|        (r2,c2)|   |       (r2,c2)|   |   (r2,c1)     |   |              |   |              |</span><br><span class="line">+---------------+   +--------------+   +---------------+   +--------------+   +--------------+</span><br></pre></td></tr></table></figure>
-<h3 id="代码-1">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NumMatrix</span>&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; sum;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    NumMatrix(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; matrix) &#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> m = matrix.size();</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> n = m &gt; <span class="number">0</span> ? matrix[<span class="number">0</span>].size() : <span class="number">0</span>;</span><br><span class="line">        sum = <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;(m+<span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;(n+<span class="number">1</span>, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= m; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt;= n; j++) &#123;</span><br><span class="line">                sum[i][j] = sum[i<span class="number">-1</span>][j<span class="number">-1</span>] + sum[i][j<span class="number">-1</span>] - sum[i<span class="number">-1</span>][j<span class="number">-1</span>] + matrix[i<span class="number">-1</span>][j<span class="number">-1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">sumRegion</span><span class="params">(<span class="keyword">int</span> row1, <span class="keyword">int</span> col1, <span class="keyword">int</span> row2, <span class="keyword">int</span> col2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sums[row2+<span class="number">1</span>][col2+<span class="number">1</span>] - sums[row2+<span class="number">1</span>][col1] - sums[row1][col2+<span class="number">1</span>] + sums[row1][col1];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="range-sum-query-mutable">Range Sum Query Mutable</h2>
-<p>Given an integer array nums, find the sum of the elements between indices i and j (i ≤ j), inclusive.</p>
-<p>The update(i, val) function modifies nums by updating the element at index i to val.</p>
-<p>Example: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Given nums = [1, 3, 5]</span><br><span class="line">-</span><br><span class="line">sumRange(0, 2) -&gt; 9</span><br><span class="line">update(1, 2)</span><br><span class="line">sumRange(0, 2) -&gt; 8</span><br></pre></td></tr></table></figure> Note:</p>
-<p>The array is only modifiable by the update function. You may assume the number of calls to update and sumRange function is distributed evenly.</p>
-<h3 id="fenwick-tree-binary-index-tree">Fenwick Tree (Binary Index Tree)</h3>
-<p>树状数组，我们需要两个数组来存储，原始数组和 bit 数组 * 假定 i 为左子节点，那么其父节点的坐标为 (i + lowbit(i)) * 假定 i 为右子节点，那么其父节点的坐标为 (i - lowbit(i)) * update(int i, int delta) --&gt; 更新前缀和数组中每一个受影响前缀和，从 i 到 最后一个位置 O (n) * query(int) --&gt; 直接返回 idx + 1 的前缀和 O(1) * 求 i 到 j 的前缀和 就可用 query(j+1) - query(i) 来计算 * 求和的基本思想，给定要求和的位置 i，可以用二级制表示法来分段求和，以 13 为例 13 = 2^3 + 2 ^2 + 2 ^ 0; * 因此 prefixSum(13) = Range(1, 8) + Range(9, 12) + Range(13) // Range(i, j) 表示 i 到 j 的数字求和 * arr = [1, 7, 3, 0, 5, 8, 3, 2, 6, 2, 1, 1, 4, 5] prefixSum(13) = RANGE(1, 8) + RANGE(9, 12) + RANGE(13, 13) = 29 + 10 + 4 = 43</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FenwickTree</span>&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; sum_;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="title">lowbit</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x &amp; (-x);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    FenwickTree(<span class="keyword">int</span> n) : sum(n+<span class="number">1</span>, <span class="number">0</span>) &#123; &#125;</span><br><span class="line">    <span class="comment">// 更新一个值，坐标 为 i，需要修改 bit 数组中涵盖了 原始数组 arr[i] 的值 --&gt;  下标 i 以及所有的父节点</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> delta)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (i &lt; sum.size()) &#123;</span><br><span class="line">            sum_[i] += delta;</span><br><span class="line">            i += lowbit(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 区间求和，假定求 i --&gt; j 的数值之和，可以求 0 --&gt; i-1 , 0 --&gt; j，再相减</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> i)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            sum += sum_[i];</span><br><span class="line">            i -= lowbit(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 区间求和 和 更新数组 都是 O(logn)</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NumArray</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; nums_;</span><br><span class="line">    FenwickTree tree_;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    NumArray(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; nums): nums_(move(nums)), tree_(nums.size()) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums_.size(); i++) &#123;</span><br><span class="line">            tree_.update(i+<span class="number">1</span>, nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        tree_.update(i, val - nums[i]);</span><br><span class="line">        nums_[i] -= val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">sumQuery</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> tree_.query(j+<span class="number">1</span>) - tree_.query(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="segment-tree">Segment Tree</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SegmentNode</span>&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> start;</span><br><span class="line">    <span class="keyword">int</span> end;</span><br><span class="line">    <span class="keyword">int</span> sum;</span><br><span class="line">    SegmentNode *left;</span><br><span class="line">    SegmentNode *right;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    SegmentNode(<span class="keyword">int</span> start, <span class="keyword">int</span> end, <span class="keyword">int</span> sum, SegmentNode *left = <span class="literal">nullptr</span>, SegmentNode *right = <span class="literal">nullptr</span>):</span><br><span class="line">     start(start), end(end), sum(sum), left(left), right(right);</span><br><span class="line">    SegmentNode(<span class="keyword">const</span> SegmentNode&amp;) = <span class="keyword">delete</span>;</span><br><span class="line">    SegmentNode&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> SegmentNode&amp;) = <span class="keyword">delete</span>;</span><br><span class="line"></span><br><span class="line">    ~SegmentNode() &#123;</span><br><span class="line">        <span class="keyword">delete</span> left;</span><br><span class="line">        <span class="keyword">delete</span> right;</span><br><span class="line">        left = right = <span class="literal">nullptr</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
       </tags>
   </entry>
   <entry>
