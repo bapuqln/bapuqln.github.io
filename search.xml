@@ -1,71 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>AddTwoNumber</title>
-    <url>/2019/11/22/AddTwoNumber/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://leetcode.com/problems/add-two-numbers/">AddTwoNumbers</a> You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.</p>
-<p>You may assume the two numbers do not contain any leading zero, except the number 0 itself.</p>
-<p>Example:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)</span><br><span class="line">Output: 7 -&gt; 0 -&gt; 8</span><br><span class="line">Explanation: 342 + 465 = 807.</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li><code>2</code> 个 <code>非空</code>链表，长度可能不相等</li>
-<li>每个链表为<code>逆序</code></li>
-<li>返回两个链表的和</li>
-<li>每个元素应该为正数</li>
-</ul>
-<h3 id="理解例子">理解例子</h3>
-<ul>
-<li><code>2 -&gt; 4 -&gt; 3</code> = <code>342</code></li>
-<li><code>5 -&gt; 6 -&gt; 4</code> = <code>465</code></li>
-<li><code>342 + 465 = 807</code></li>
-<li>答案 : <code>7 -&gt; 0 -&gt; 8</code></li>
-</ul>
-<h3 id="思路">思路</h3>
-<ul>
-<li>将每一个链表变成整形，然后相加，结果分解成链表不大合适，还得处理越界的情况</li>
-<li>比较合理的办法：是一边遍历一边生成链表</li>
-<li>每一个生成的节点为两个数的和，有可能产生进位: 如 <code>7+8=15</code></li>
-<li>一个节点的结果为：<code>sum = 前一个节点的进位+两个节点的和</code>，<code>res = sum % 10</code>;</li>
-<li>一个节点的结果几种情况
-<ul>
-<li><code>last_carry + left + right &lt; 10</code></li>
-<li><code>last_carry + left + right &gt;= 10</code></li>
-<li><code>只要有进位，就一定会有一个新的节点出现</code></li>
-</ul></li>
-</ul>
-<h3 id="代码">代码</h3>
-<h4 id="非递归">非递归</h4>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!l1) <span class="keyword">return</span> l2;</span><br><span class="line">        <span class="keyword">if</span> (!l2) <span class="keyword">return</span> l1;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> carry = <span class="number">0</span>;</span><br><span class="line">        <span class="function">ListNode <span class="title">dummy</span><span class="params">(<span class="number">0</span>)</span></span>;</span><br><span class="line">        ListNode *head = &amp;dummy;</span><br><span class="line">        <span class="keyword">while</span> (l1 || l2 || carry) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = (l1 ? l1-&gt;val : <span class="number">0</span>) + (l2 ? l2-&gt;val : <span class="number">0</span>) + carry;</span><br><span class="line">            head-&gt;next = <span class="keyword">new</span> ListNode (sum % <span class="number">10</span>);</span><br><span class="line">            head = head-&gt;next;</span><br><span class="line">            carry = sum / <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (l1) l1 = l1-&gt;next;</span><br><span class="line">            <span class="keyword">if</span> (l2) l2 = l2-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dummy.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span> </span>&#123;</span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">var</span> val: <span class="type">Int</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">var</span> next: <span class="type">ListNode?</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">init</span>(<span class="number">_</span> val: <span class="type">Int</span>) &#123;</span><br><span class="line">     <span class="keyword">self</span>.val = val</span><br><span class="line">     <span class="keyword">self</span>.next = <span class="literal">nil</span></span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">addTwoNumbers</span><span class="params">(<span class="number">_</span> l1: ListNode?, <span class="number">_</span> l2: ListNode?)</span></span> -&gt; <span class="type">ListNode?</span> &#123;</span><br><span class="line">    	<span class="keyword">var</span> l1 = l1</span><br><span class="line">        <span class="keyword">var</span> l2 = l2</span><br><span class="line">        <span class="keyword">var</span> prev = <span class="type">ListNode</span>(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">var</span> carry = <span class="number">0</span></span><br><span class="line">        <span class="keyword">let</span> head = prev</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> l1 != <span class="literal">nil</span> || l2 != <span class="literal">nil</span> || carry != <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> cur = <span class="type">ListNode</span>(<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">let</span> sum = (l2 == <span class="literal">nil</span> ? <span class="number">0</span> : l2!.val) + (l1 == <span class="literal">nil</span> ? <span class="number">0</span> : l1!.val) + carry</span><br><span class="line">            cur.val = sum % <span class="number">10</span></span><br><span class="line">            carry = sum / <span class="number">10</span></span><br><span class="line">            prev.next = cur</span><br><span class="line">            prev = cur</span><br><span class="line">            l1 = l1 == <span class="literal">nil</span> ? l1: l1?.next</span><br><span class="line">            l2 = l2 == <span class="literal">nil</span> ? l2: l2?.next</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> head.next</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="递归">递归</h4>
-<p>这道题比较简单，递归模式也比较好想到 加法需要三个值，两个操作符（来自两个链表）以及一个进位标记。 因此递归模式为：</p>
-<ul>
-<li>递归出口：两个链表都已经到达末尾，并且没有进位</li>
-<li>递归实现：
-<ul>
-<li>当前节点的结果为：和/10</li>
-<li>当前节点的next节点为：对于两个链表next节点的计算的结果</li>
-</ul></li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2, <span class="keyword">int</span> carry)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!l1 &amp;&amp; !l2 &amp;&amp; !carry) <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="keyword">int</span> sum = (l1?l1-&gt;val:<span class="number">0</span>) + (l2?l2-&gt;val:<span class="number">0</span>) + carry;</span><br><span class="line">        ListNode *ans = <span class="keyword">new</span> ListNode(sum % <span class="number">10</span>);</span><br><span class="line">        ans-&gt;next = addTwoNumbers(l1?l1-&gt;next:<span class="literal">nullptr</span>, l2?l2-&gt;next:<span class="literal">nullptr</span>, sum / <span class="number">10</span>);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> addTwoNumbers(l1, l2, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p>遍历次数：<code>max(len(l1), len(l2)) + 1</code>，因此是线性时间 \(\)</p>
-<h3 id="空间复杂度">空间复杂度</h3>
-<p>额外申请了和一个链表，因此空间复杂度也为 \(\)</p>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Medium</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Basic Calculator</title>
     <url>/2020/06/12/BasicCalculator/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -136,6 +71,71 @@
       <tags>
         <tag>LeetCode</tag>
         <tag>Hard</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>AddTwoNumber</title>
+    <url>/2019/11/22/AddTwoNumber/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
+<p><a href="https://leetcode.com/problems/add-two-numbers/">AddTwoNumbers</a> You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.</p>
+<p>You may assume the two numbers do not contain any leading zero, except the number 0 itself.</p>
+<p>Example:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)</span><br><span class="line">Output: 7 -&gt; 0 -&gt; 8</span><br><span class="line">Explanation: 342 + 465 = 807.</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="解题报告">解题报告</h2>
+<h3 id="理解题意">理解题意</h3>
+<ul>
+<li><code>2</code> 个 <code>非空</code>链表，长度可能不相等</li>
+<li>每个链表为<code>逆序</code></li>
+<li>返回两个链表的和</li>
+<li>每个元素应该为正数</li>
+</ul>
+<h3 id="理解例子">理解例子</h3>
+<ul>
+<li><code>2 -&gt; 4 -&gt; 3</code> = <code>342</code></li>
+<li><code>5 -&gt; 6 -&gt; 4</code> = <code>465</code></li>
+<li><code>342 + 465 = 807</code></li>
+<li>答案 : <code>7 -&gt; 0 -&gt; 8</code></li>
+</ul>
+<h3 id="思路">思路</h3>
+<ul>
+<li>将每一个链表变成整形，然后相加，结果分解成链表不大合适，还得处理越界的情况</li>
+<li>比较合理的办法：是一边遍历一边生成链表</li>
+<li>每一个生成的节点为两个数的和，有可能产生进位: 如 <code>7+8=15</code></li>
+<li>一个节点的结果为：<code>sum = 前一个节点的进位+两个节点的和</code>，<code>res = sum % 10</code>;</li>
+<li>一个节点的结果几种情况
+<ul>
+<li><code>last_carry + left + right &lt; 10</code></li>
+<li><code>last_carry + left + right &gt;= 10</code></li>
+<li><code>只要有进位，就一定会有一个新的节点出现</code></li>
+</ul></li>
+</ul>
+<h3 id="代码">代码</h3>
+<h4 id="非递归">非递归</h4>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!l1) <span class="keyword">return</span> l2;</span><br><span class="line">        <span class="keyword">if</span> (!l2) <span class="keyword">return</span> l1;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> carry = <span class="number">0</span>;</span><br><span class="line">        <span class="function">ListNode <span class="title">dummy</span><span class="params">(<span class="number">0</span>)</span></span>;</span><br><span class="line">        ListNode *head = &amp;dummy;</span><br><span class="line">        <span class="keyword">while</span> (l1 || l2 || carry) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = (l1 ? l1-&gt;val : <span class="number">0</span>) + (l2 ? l2-&gt;val : <span class="number">0</span>) + carry;</span><br><span class="line">            head-&gt;next = <span class="keyword">new</span> ListNode (sum % <span class="number">10</span>);</span><br><span class="line">            head = head-&gt;next;</span><br><span class="line">            carry = sum / <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (l1) l1 = l1-&gt;next;</span><br><span class="line">            <span class="keyword">if</span> (l2) l2 = l2-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dummy.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span> </span>&#123;</span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">var</span> val: <span class="type">Int</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">var</span> next: <span class="type">ListNode?</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">init</span>(<span class="number">_</span> val: <span class="type">Int</span>) &#123;</span><br><span class="line">     <span class="keyword">self</span>.val = val</span><br><span class="line">     <span class="keyword">self</span>.next = <span class="literal">nil</span></span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">addTwoNumbers</span><span class="params">(<span class="number">_</span> l1: ListNode?, <span class="number">_</span> l2: ListNode?)</span></span> -&gt; <span class="type">ListNode?</span> &#123;</span><br><span class="line">    	<span class="keyword">var</span> l1 = l1</span><br><span class="line">        <span class="keyword">var</span> l2 = l2</span><br><span class="line">        <span class="keyword">var</span> prev = <span class="type">ListNode</span>(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">var</span> carry = <span class="number">0</span></span><br><span class="line">        <span class="keyword">let</span> head = prev</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> l1 != <span class="literal">nil</span> || l2 != <span class="literal">nil</span> || carry != <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> cur = <span class="type">ListNode</span>(<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">let</span> sum = (l2 == <span class="literal">nil</span> ? <span class="number">0</span> : l2!.val) + (l1 == <span class="literal">nil</span> ? <span class="number">0</span> : l1!.val) + carry</span><br><span class="line">            cur.val = sum % <span class="number">10</span></span><br><span class="line">            carry = sum / <span class="number">10</span></span><br><span class="line">            prev.next = cur</span><br><span class="line">            prev = cur</span><br><span class="line">            l1 = l1 == <span class="literal">nil</span> ? l1: l1?.next</span><br><span class="line">            l2 = l2 == <span class="literal">nil</span> ? l2: l2?.next</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> head.next</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="递归">递归</h4>
+<p>这道题比较简单，递归模式也比较好想到 加法需要三个值，两个操作符（来自两个链表）以及一个进位标记。 因此递归模式为：</p>
+<ul>
+<li>递归出口：两个链表都已经到达末尾，并且没有进位</li>
+<li>递归实现：
+<ul>
+<li>当前节点的结果为：和/10</li>
+<li>当前节点的next节点为：对于两个链表next节点的计算的结果</li>
+</ul></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2, <span class="keyword">int</span> carry)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!l1 &amp;&amp; !l2 &amp;&amp; !carry) <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="keyword">int</span> sum = (l1?l1-&gt;val:<span class="number">0</span>) + (l2?l2-&gt;val:<span class="number">0</span>) + carry;</span><br><span class="line">        ListNode *ans = <span class="keyword">new</span> ListNode(sum % <span class="number">10</span>);</span><br><span class="line">        ans-&gt;next = addTwoNumbers(l1?l1-&gt;next:<span class="literal">nullptr</span>, l2?l2-&gt;next:<span class="literal">nullptr</span>, sum / <span class="number">10</span>);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> addTwoNumbers(l1, l2, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="时间复杂度">时间复杂度</h3>
+<p>遍历次数：<code>max(len(l1), len(l2)) + 1</code>，因此是线性时间 \(\)</p>
+<h3 id="空间复杂度">空间复杂度</h3>
+<p>额外申请了和一个链表，因此空间复杂度也为 \(\)</p>
+]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>LeetCode</tag>
+        <tag>Medium</tag>
       </tags>
   </entry>
   <entry>
