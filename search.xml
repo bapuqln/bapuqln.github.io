@@ -66,47 +66,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Basic Calculator</title>
-    <url>/2020/06/12/BasicCalculator/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://leetcode.com/problems/basic-calculator/">Basic Calculator</a> Implement a basic calculator to evaluate a simple expression string.</p>
-<p>The expression string may contain open ( and closing parentheses ), the plus + or minus sign -, non-negative integers and empty spaces .</p>
-<p>Example 1: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: <span class="string">&quot;1 + 1&quot;</span></span><br><span class="line">Output: 2</span><br></pre></td></tr></table></figure></p>
-<p>Example 2: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: <span class="string">&quot; 2-1 + 2 &quot;</span></span><br><span class="line">Output: 3</span><br></pre></td></tr></table></figure></p>
-<p>Example 3: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: <span class="string">&quot;(1+(4+5+2)-3)+(6+8)&quot;</span></span><br><span class="line">Output: 23</span><br></pre></td></tr></table></figure></p>
-<p>Note: You may assume that the given expression is always valid. Do not use the eval built-in library function.</p>
-<a id="more"></a>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="思路">思路</h3>
-<ul>
-<li>看到这种模式肯定要用到栈 <code>stack</code></li>
-<li>会有括号的处理，这块可能会复杂点，因为有可能会导致计算优先级改变。</li>
-<li>说白了就是将整个过程看为求和，每个数分配一个操作符，用来求和</li>
-<li>分析例子可以知道 &gt; * 每一个数字都会消耗掉一个符号(+、-) &gt; <em> 每一个数字都会产生一个新的符号(+, -) &gt; </em> 每一个 <code>(</code> 都会复制当前的符号，这样的话他就能给该操作范围内的第一个数用， &gt; * 每一个 <code>)</code> 都会关闭当前的操作范围，因此会丢弃掉当前的符号</li>
-</ul>
-<h2 id="代码">代码</h2>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 2 sign</span></span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">sign</span><span class="params">(<span class="number">2</span>, <span class="number">1</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length();i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = s[i];</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">isdigit</span>(c)) &#123;</span><br><span class="line">                <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">while</span> (i &lt; s.size() &amp;&amp; <span class="built_in">isdigit</span>(s[i]))</span><br><span class="line">                    n = n * <span class="number">10</span> + (s[i++] - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">                ans += sign.back() * n;</span><br><span class="line">                sign.pop_back();</span><br><span class="line">                i--;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                sign.pop_back();</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27; &#x27;</span>) &#123;</span><br><span class="line">                sign.push_back(sign.back() * (c == <span class="string">&#x27;-&#x27;</span> ? <span class="number">-1</span> : <span class="number">1</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="例子">例子</h2>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"> remaining   sign <span class="built_in">stack</span>      total</span><br><span class="line"><span class="number">3</span>-(<span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">1</span>]            <span class="number">0</span></span><br><span class="line"> -(<span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>]               <span class="number">3</span></span><br><span class="line">  (<span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>]           <span class="number">3</span></span><br><span class="line">   <span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]       <span class="number">3</span></span><br><span class="line">    +(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>]           <span class="number">1</span></span><br><span class="line">     (<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]       <span class="number">1</span></span><br><span class="line">      <span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>]   <span class="number">1</span></span><br><span class="line">       <span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]      <span class="number">-8</span></span><br><span class="line">        <span class="number">4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>, <span class="number">1</span>]   <span class="number">-8</span></span><br><span class="line">         ))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]      <span class="number">-4</span></span><br><span class="line">          )   [<span class="number">1</span>, <span class="number">-1</span>]          <span class="number">-4</span></span><br><span class="line">              [<span class="number">1</span>]              <span class="number">-4</span></span><br></pre></td></tr></table></figure>
-<h2 id="另一种解法">另一种解法</h2>
-<h3 id="思路-1">思路</h3>
-<ul>
-<li>括号内优先计算</li>
-<li>碰到 <code>(</code> ,将计算结果和操作符入栈</li>
-<li>碰到数字就带着符号计算结果。</li>
-</ul>
-<h3 id="代码-1">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> l = s.length();</span><br><span class="line">        <span class="keyword">int</span> sign = <span class="number">1</span>, ans = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; stk_;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; l; i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = s[i];</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">isdigit</span>(c)) &#123;</span><br><span class="line">                <span class="keyword">int</span> d = c - <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">                <span class="keyword">while</span> (i+<span class="number">1</span> &lt; l &amp;&amp; <span class="built_in">isdigit</span>(s[i+<span class="number">1</span>])) &#123;</span><br><span class="line">                    d = d * <span class="number">10</span> + (s[++i] - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                ans += d * sign;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;+&#x27;</span> || c == <span class="string">&#x27;-&#x27;</span>) &#123;</span><br><span class="line">                sign = c == <span class="string">&#x27;+&#x27;</span> ? <span class="number">1</span> : <span class="number">-1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                stk_.push(ans);</span><br><span class="line">                stk_.push(sign);</span><br><span class="line">                ans = <span class="number">0</span>;</span><br><span class="line">                sign = <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;)&#x27;</span>) &#123;</span><br><span class="line">                ans *= stk_.top(); stk_.pop();</span><br><span class="line">                ans += stk_.top(); stk_.pop();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Hard</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Best Time To Buy Sell Stock IV</title>
     <url>/2020/06/07/BestTimeToBuyAndSellStockIV/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -167,6 +126,47 @@
       </categories>
       <tags>
         <tag>Codility</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Basic Calculator</title>
+    <url>/2020/06/12/BasicCalculator/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
+<p><a href="https://leetcode.com/problems/basic-calculator/">Basic Calculator</a> Implement a basic calculator to evaluate a simple expression string.</p>
+<p>The expression string may contain open ( and closing parentheses ), the plus + or minus sign -, non-negative integers and empty spaces .</p>
+<p>Example 1: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: <span class="string">&quot;1 + 1&quot;</span></span><br><span class="line">Output: 2</span><br></pre></td></tr></table></figure></p>
+<p>Example 2: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: <span class="string">&quot; 2-1 + 2 &quot;</span></span><br><span class="line">Output: 3</span><br></pre></td></tr></table></figure></p>
+<p>Example 3: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: <span class="string">&quot;(1+(4+5+2)-3)+(6+8)&quot;</span></span><br><span class="line">Output: 23</span><br></pre></td></tr></table></figure></p>
+<p>Note: You may assume that the given expression is always valid. Do not use the eval built-in library function.</p>
+<a id="more"></a>
+<h2 id="解题报告">解题报告</h2>
+<h3 id="思路">思路</h3>
+<ul>
+<li>看到这种模式肯定要用到栈 <code>stack</code></li>
+<li>会有括号的处理，这块可能会复杂点，因为有可能会导致计算优先级改变。</li>
+<li>说白了就是将整个过程看为求和，每个数分配一个操作符，用来求和</li>
+<li>分析例子可以知道 &gt; * 每一个数字都会消耗掉一个符号(+、-) &gt; <em> 每一个数字都会产生一个新的符号(+, -) &gt; </em> 每一个 <code>(</code> 都会复制当前的符号，这样的话他就能给该操作范围内的第一个数用， &gt; * 每一个 <code>)</code> 都会关闭当前的操作范围，因此会丢弃掉当前的符号</li>
+</ul>
+<h2 id="代码">代码</h2>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 2 sign</span></span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">sign</span><span class="params">(<span class="number">2</span>, <span class="number">1</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length();i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = s[i];</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">isdigit</span>(c)) &#123;</span><br><span class="line">                <span class="keyword">int</span> n = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">while</span> (i &lt; s.size() &amp;&amp; <span class="built_in">isdigit</span>(s[i]))</span><br><span class="line">                    n = n * <span class="number">10</span> + (s[i++] - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">                ans += sign.back() * n;</span><br><span class="line">                sign.pop_back();</span><br><span class="line">                i--;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                sign.pop_back();</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27; &#x27;</span>) &#123;</span><br><span class="line">                sign.push_back(sign.back() * (c == <span class="string">&#x27;-&#x27;</span> ? <span class="number">-1</span> : <span class="number">1</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="例子">例子</h2>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"> remaining   sign <span class="built_in">stack</span>      total</span><br><span class="line"><span class="number">3</span>-(<span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">1</span>]            <span class="number">0</span></span><br><span class="line"> -(<span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>]               <span class="number">3</span></span><br><span class="line">  (<span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>]           <span class="number">3</span></span><br><span class="line">   <span class="number">2</span>+(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]       <span class="number">3</span></span><br><span class="line">    +(<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>]           <span class="number">1</span></span><br><span class="line">     (<span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]       <span class="number">1</span></span><br><span class="line">      <span class="number">9</span><span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>]   <span class="number">1</span></span><br><span class="line">       <span class="number">-4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]      <span class="number">-8</span></span><br><span class="line">        <span class="number">4</span>))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>, <span class="number">1</span>]   <span class="number">-8</span></span><br><span class="line">         ))   [<span class="number">1</span>, <span class="number">-1</span>, <span class="number">-1</span>]      <span class="number">-4</span></span><br><span class="line">          )   [<span class="number">1</span>, <span class="number">-1</span>]          <span class="number">-4</span></span><br><span class="line">              [<span class="number">1</span>]              <span class="number">-4</span></span><br></pre></td></tr></table></figure>
+<h2 id="另一种解法">另一种解法</h2>
+<h3 id="思路-1">思路</h3>
+<ul>
+<li>括号内优先计算</li>
+<li>碰到 <code>(</code> ,将计算结果和操作符入栈</li>
+<li>碰到数字就带着符号计算结果。</li>
+</ul>
+<h3 id="代码-1">代码</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="built_in">string</span> s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> l = s.length();</span><br><span class="line">        <span class="keyword">int</span> sign = <span class="number">1</span>, ans = <span class="number">0</span>;</span><br><span class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; stk_;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; l; i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = s[i];</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">isdigit</span>(c)) &#123;</span><br><span class="line">                <span class="keyword">int</span> d = c - <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">                <span class="keyword">while</span> (i+<span class="number">1</span> &lt; l &amp;&amp; <span class="built_in">isdigit</span>(s[i+<span class="number">1</span>])) &#123;</span><br><span class="line">                    d = d * <span class="number">10</span> + (s[++i] - <span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                ans += d * sign;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;+&#x27;</span> || c == <span class="string">&#x27;-&#x27;</span>) &#123;</span><br><span class="line">                sign = c == <span class="string">&#x27;+&#x27;</span> ? <span class="number">1</span> : <span class="number">-1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                stk_.push(ans);</span><br><span class="line">                stk_.push(sign);</span><br><span class="line">                ans = <span class="number">0</span>;</span><br><span class="line">                sign = <span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">&#x27;)&#x27;</span>) &#123;</span><br><span class="line">                ans *= stk_.top(); stk_.pop();</span><br><span class="line">                ans += stk_.top(); stk_.pop();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>LeetCode</tag>
+        <tag>Hard</tag>
       </tags>
   </entry>
   <entry>
@@ -1003,43 +1003,6 @@ K = 4</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>Majority Element</title>
-    <url>/2020/06/04/MajorityElement/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://leetcode.com/problems/majority-element/">Majority Element</a> Given an array of size n, find the majority element. The majority element is the element that appears more than ⌊ n/2 ⌋ times.</p>
-<p>You may assume that the array is non-empty and the majority element always exist in the array.</p>
-<p>Example 1: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: [3,2,3]</span><br><span class="line">Output: 3</span><br></pre></td></tr></table></figure> Example 2: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: [2,2,1,1,1,2,2]</span><br><span class="line">Output: 2</span><br></pre></td></tr></table></figure> <a id="more"></a></p>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="哈希表">哈希表</h3>
-<ul>
-<li>对每一个元素计数，找到大于 n/2 的元素返回即可</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">majorityElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; numbers)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; map_;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> num:numbers) &#123;</span><br><span class="line">            <span class="keyword">if</span> (++map_[num] &gt; numbers.size() / <span class="number">2</span>)</span><br><span class="line">                <span class="keyword">return</span> num;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="排序">排序</h3>
-<ul>
-<li>因为满足需求的个数是至少 n / 2， 因此只需要找到排序后处于一半位置的元素就是答案。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">majorityElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; numbers)</span> </span>&#123;</span><br><span class="line">        nth_element(numbers.begin(), numbers.begin() + numbers.size() / <span class="number">2</span>, numbers.end());</span><br><span class="line">        <span class="keyword">return</span> numbers[numbers.size()/<span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="divide-and-conquer">Divide and Conquer</h3>
-<ul>
-<li>递归的找两部分的 majority，最后合并结果，递归出口就是单个元素</li>
-<li><code>algorithm</code> 中有个 count 函数，类似于 find，主要是使用一对迭代器和一个值作为参数，返回值出现的次数。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">majorityElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; numbers)</span> </span>&#123;</span><br><span class="line">        function&lt;<span class="keyword">int</span>(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;, <span class="keyword">int</span> ,<span class="keyword">int</span> )&gt; majorityElementHelper = [&amp;](<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; element, <span class="keyword">int</span> l, <span class="keyword">int</span> r)&#123;</span><br><span class="line">            <span class="keyword">if</span> (l == r) <span class="keyword">return</span> element[l];</span><br><span class="line">            <span class="keyword">int</span> m = l + (r-l)/<span class="number">2</span>;</span><br><span class="line">            <span class="keyword">int</span> lm = majorityElementHelper(elements, l, m);</span><br><span class="line">            <span class="keyword">int</span> rm = majorityElementHelper(elements, m+<span class="number">1</span>, r);</span><br><span class="line">            <span class="keyword">if</span> (lm == rm) <span class="keyword">return</span> lm;</span><br><span class="line">            <span class="keyword">return</span> count(nums.begin() + l, nums.begin() + r + <span class="number">1</span>, lm) &gt; count(nums.begin() + l, nums.begin() + r + <span class="number">1</span>, rm) ? lm : rm;</span><br><span class="line"></span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">return</span> majorityElementHelper(numbers,<span class="number">0</span>, numbers.size() - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="moore-voting-algorithm">Moore Voting Algorithm</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">majorityElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp;numbers)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">0</span>, majority;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> num:numbers) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!count) &#123;</span><br><span class="line">                majority = num;</span><br><span class="line">            &#125;</span><br><span class="line">            count += (num == majority) <span class="number">1</span> : <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> majority;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h4 id="位操作">位操作</h4>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">majorityElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp;numbers)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> majority = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> i = <span class="number">0</span>, mask = <span class="number">1</span>; i &lt; <span class="number">32</span>; i++, mask &lt;&lt;= <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> bits = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> num : numbers) &#123;</span><br><span class="line">                <span class="keyword">if</span> (num &amp; mask) &#123;</span><br><span class="line">                    bits++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (bits &gt; numbers.size() / <span class="number">2</span>) &#123;</span><br><span class="line">                majority |= mask;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> majority;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Medium</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MaxCounter</title>
     <url>/2020/10/06/MaxCounter/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -1095,6 +1058,43 @@ A[6] = 4</code></pre>
       </categories>
       <tags>
         <tag>Codility</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Majority Element</title>
+    <url>/2020/06/04/MajorityElement/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
+<p><a href="https://leetcode.com/problems/majority-element/">Majority Element</a> Given an array of size n, find the majority element. The majority element is the element that appears more than ⌊ n/2 ⌋ times.</p>
+<p>You may assume that the array is non-empty and the majority element always exist in the array.</p>
+<p>Example 1: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: [3,2,3]</span><br><span class="line">Output: 3</span><br></pre></td></tr></table></figure> Example 2: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: [2,2,1,1,1,2,2]</span><br><span class="line">Output: 2</span><br></pre></td></tr></table></figure> <a id="more"></a></p>
+<h2 id="解题报告">解题报告</h2>
+<h3 id="哈希表">哈希表</h3>
+<ul>
+<li>对每一个元素计数，找到大于 n/2 的元素返回即可</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">majorityElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; numbers)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; map_;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> num:numbers) &#123;</span><br><span class="line">            <span class="keyword">if</span> (++map_[num] &gt; numbers.size() / <span class="number">2</span>)</span><br><span class="line">                <span class="keyword">return</span> num;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="排序">排序</h3>
+<ul>
+<li>因为满足需求的个数是至少 n / 2， 因此只需要找到排序后处于一半位置的元素就是答案。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">majorityElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; numbers)</span> </span>&#123;</span><br><span class="line">        nth_element(numbers.begin(), numbers.begin() + numbers.size() / <span class="number">2</span>, numbers.end());</span><br><span class="line">        <span class="keyword">return</span> numbers[numbers.size()/<span class="number">2</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="divide-and-conquer">Divide and Conquer</h3>
+<ul>
+<li>递归的找两部分的 majority，最后合并结果，递归出口就是单个元素</li>
+<li><code>algorithm</code> 中有个 count 函数，类似于 find，主要是使用一对迭代器和一个值作为参数，返回值出现的次数。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">majorityElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; numbers)</span> </span>&#123;</span><br><span class="line">        function&lt;<span class="keyword">int</span>(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;, <span class="keyword">int</span> ,<span class="keyword">int</span> )&gt; majorityElementHelper = [&amp;](<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; element, <span class="keyword">int</span> l, <span class="keyword">int</span> r)&#123;</span><br><span class="line">            <span class="keyword">if</span> (l == r) <span class="keyword">return</span> element[l];</span><br><span class="line">            <span class="keyword">int</span> m = l + (r-l)/<span class="number">2</span>;</span><br><span class="line">            <span class="keyword">int</span> lm = majorityElementHelper(elements, l, m);</span><br><span class="line">            <span class="keyword">int</span> rm = majorityElementHelper(elements, m+<span class="number">1</span>, r);</span><br><span class="line">            <span class="keyword">if</span> (lm == rm) <span class="keyword">return</span> lm;</span><br><span class="line">            <span class="keyword">return</span> count(nums.begin() + l, nums.begin() + r + <span class="number">1</span>, lm) &gt; count(nums.begin() + l, nums.begin() + r + <span class="number">1</span>, rm) ? lm : rm;</span><br><span class="line"></span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">return</span> majorityElementHelper(numbers,<span class="number">0</span>, numbers.size() - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="moore-voting-algorithm">Moore Voting Algorithm</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">majorityElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp;numbers)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">0</span>, majority;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> num:numbers) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!count) &#123;</span><br><span class="line">                majority = num;</span><br><span class="line">            &#125;</span><br><span class="line">            count += (num == majority) <span class="number">1</span> : <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> majority;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="位操作">位操作</h4>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">majorityElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp;numbers)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> majority = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> i = <span class="number">0</span>, mask = <span class="number">1</span>; i &lt; <span class="number">32</span>; i++, mask &lt;&lt;= <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> bits = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> num : numbers) &#123;</span><br><span class="line">                <span class="keyword">if</span> (num &amp; mask) &#123;</span><br><span class="line">                    bits++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (bits &gt; numbers.size() / <span class="number">2</span>) &#123;</span><br><span class="line">                majority |= mask;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> majority;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>LeetCode</tag>
+        <tag>Medium</tag>
       </tags>
   </entry>
   <entry>
@@ -1383,6 +1383,43 @@ A[6] = 4</code></pre>
       </tags>
   </entry>
   <entry>
+    <title>PassingCars</title>
+    <url>/2020/10/07/PassingCars/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
+<p><a href="https://app.codility.com/demo/results/trainingB4JZ2Q-S4C/">PassingCars</a></p>
+<p>A non-empty array A consisting of N integers is given. The consecutive elements of array A represent consecutive cars on a road.</p>
+<p>Array A contains only 0s and/or 1s:</p>
+<p>0 represents a car traveling east, 1 represents a car traveling west. The goal is to count passing cars. We say that a pair of cars (P, Q), where 0 ≤ P &lt; Q &lt; N, is passing when P is traveling to the east and Q is traveling to the west.</p>
+<p>For example, consider array A such that:</p>
+<p>A[0] = 0 A[1] = 1 A[2] = 0 A[3] = 1 A[4] = 1 We have five pairs of passing cars: (0, 1), (0, 3), (0, 4), (2, 3), (2, 4).</p>
+<p>Write a function:</p>
+<p>int solution(vector<int> &amp;A);</p>
+<p>that, given a non-empty array A of N integers, returns the number of pairs of passing cars.</p>
+<p>The function should return −1 if the number of pairs of passing cars exceeds 1,000,000,000.</p>
+<p>For example, given:</p>
+<p>A[0] = 0 A[1] = 1 A[2] = 0 A[3] = 1 A[4] = 1 the function should return 5, as explained above.</p>
+<p>Write an efficient algorithm for the following assumptions:</p>
+<p>N is an integer within the range [1..100,000]; each element of array A is an integer that can have one of the following values: 0, 1. <a id="more"></a></p>
+<h2 id="解题报告">解题报告</h2>
+<h3 id="理解题意">理解题意</h3>
+<ul>
+<li>给定一个数组表示汽车行进方向</li>
+<li>要求计算能经过多少汽车，0 和 1 相遇才会加 1</li>
+<li>前缀和，从端开始计算，碰到 0，就需要把经过的汽车都加上</li>
+</ul>
+<h3 id="代码">代码</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// you can use includes, for example:</span></span><br><span class="line"><span class="comment">// #include &lt;algorithm&gt;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;numeric&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="comment">// you can write to stdout for debugging purposes, e.g.</span></span><br><span class="line"><span class="comment">// cout &lt;&lt; &quot;this is a debug message&quot; &lt;&lt; endl;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">solution</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// write your code in C++14 (g++ 6.2.0)</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> m = A.size();</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">prefixSum</span> <span class="params">(m, <span class="number">0</span>)</span></span>;</span><br><span class="line">    <span class="keyword">int</span> prefix = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; A.size(); i++) &#123;</span><br><span class="line">        prefix += A[i];</span><br><span class="line">        prefixSum[i] = prefix;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = m<span class="number">-1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">if</span> (A[i] == <span class="number">0</span>) &#123;</span><br><span class="line">            ans += prefixSum[m<span class="number">-1</span>] - prefixSum[i];</span><br><span class="line">            <span class="keyword">if</span> (ans &gt; <span class="number">1000000000</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="时间复杂度">时间复杂度</h3>
+<p><code>O(N)</code></p>
+]]></content>
+      <categories>
+        <category>Codility</category>
+      </categories>
+      <tags>
+        <tag>Codility</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Palindrome Paritioning III</title>
     <url>/2019/12/04/ParlindromPartition-III/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -1461,43 +1498,6 @@ A[6] = 4</code></pre>
       <tags>
         <tag>LeetCode</tag>
         <tag>Hard</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>PassingCars</title>
-    <url>/2020/10/07/PassingCars/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://app.codility.com/demo/results/trainingB4JZ2Q-S4C/">PassingCars</a></p>
-<p>A non-empty array A consisting of N integers is given. The consecutive elements of array A represent consecutive cars on a road.</p>
-<p>Array A contains only 0s and/or 1s:</p>
-<p>0 represents a car traveling east, 1 represents a car traveling west. The goal is to count passing cars. We say that a pair of cars (P, Q), where 0 ≤ P &lt; Q &lt; N, is passing when P is traveling to the east and Q is traveling to the west.</p>
-<p>For example, consider array A such that:</p>
-<p>A[0] = 0 A[1] = 1 A[2] = 0 A[3] = 1 A[4] = 1 We have five pairs of passing cars: (0, 1), (0, 3), (0, 4), (2, 3), (2, 4).</p>
-<p>Write a function:</p>
-<p>int solution(vector<int> &amp;A);</p>
-<p>that, given a non-empty array A of N integers, returns the number of pairs of passing cars.</p>
-<p>The function should return −1 if the number of pairs of passing cars exceeds 1,000,000,000.</p>
-<p>For example, given:</p>
-<p>A[0] = 0 A[1] = 1 A[2] = 0 A[3] = 1 A[4] = 1 the function should return 5, as explained above.</p>
-<p>Write an efficient algorithm for the following assumptions:</p>
-<p>N is an integer within the range [1..100,000]; each element of array A is an integer that can have one of the following values: 0, 1. <a id="more"></a></p>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li>给定一个数组表示汽车行进方向</li>
-<li>要求计算能经过多少汽车，0 和 1 相遇才会加 1</li>
-<li>前缀和，从端开始计算，碰到 0，就需要把经过的汽车都加上</li>
-</ul>
-<h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// you can use includes, for example:</span></span><br><span class="line"><span class="comment">// #include &lt;algorithm&gt;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;numeric&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="comment">// you can write to stdout for debugging purposes, e.g.</span></span><br><span class="line"><span class="comment">// cout &lt;&lt; &quot;this is a debug message&quot; &lt;&lt; endl;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">solution</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// write your code in C++14 (g++ 6.2.0)</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> m = A.size();</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">prefixSum</span> <span class="params">(m, <span class="number">0</span>)</span></span>;</span><br><span class="line">    <span class="keyword">int</span> prefix = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; A.size(); i++) &#123;</span><br><span class="line">        prefix += A[i];</span><br><span class="line">        prefixSum[i] = prefix;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = m<span class="number">-1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">if</span> (A[i] == <span class="number">0</span>) &#123;</span><br><span class="line">            ans += prefixSum[m<span class="number">-1</span>] - prefixSum[i];</span><br><span class="line">            <span class="keyword">if</span> (ans &gt; <span class="number">1000000000</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p><code>O(N)</code></p>
-]]></content>
-      <categories>
-        <category>Codility</category>
-      </categories>
-      <tags>
-        <tag>Codility</tag>
       </tags>
   </entry>
   <entry>
@@ -1734,6 +1734,42 @@ A[6] = 4</code></pre>
       </tags>
   </entry>
   <entry>
+    <title>TapeEquilibrium</title>
+    <url>/2020/10/04/TapeEquilibrium/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
+<p><a href="https://app.codility.com/demo/results/training73HB8G-ZEU/">TapeEquilibrium</a> A non-empty array A consisting of N integers is given. Array A represents numbers on a tape.</p>
+<p>Any integer P, such that 0 &lt; P &lt; N, splits this tape into two non-empty parts: A[0], A[1], ..., A[P − 1] and A[P], A[P + 1], ..., A[N − 1].</p>
+<p>The difference between the two parts is the value of: |(A[0] + A[1] + ... + A[P − 1]) − (A[P] + A[P + 1] + ... + A[N − 1])|</p>
+<p>In other words, it is the absolute difference between the sum of the first part and the sum of the second part.</p>
+<p>For example, consider array A such that:</p>
+<p>A[0] = 3 A[1] = 1 A[2] = 2 A[3] = 4 A[4] = 3 We can split this tape in four places:</p>
+<p>P = 1, difference = |3 − 10| = 7 P = 2, difference = |4 − 9| = 5 P = 3, difference = |6 − 7| = 1 P = 4, difference = |10 − 3| = 7 Write a function:</p>
+<p>int solution(vector<int> &amp;A);</p>
+<p>that, given a non-empty array A of N integers, returns the minimal difference that can be achieved.</p>
+<p>For example, given:</p>
+<p>A[0] = 3 A[1] = 1 A[2] = 2 A[3] = 4 A[4] = 3 the function should return 1, as explained above.</p>
+<p>Write an efficient algorithm for the following assumptions:</p>
+<p>N is an integer within the range [2..100,000]; each element of array A is an integer within the range [−1,000..1,000].</p>
+<a id="more"></a>
+<h2 id="解题报告">解题报告</h2>
+<h3 id="理解题意">理解题意</h3>
+<ul>
+<li>又给了一堆介绍，发现求前缀和可以解决区间和的问题</li>
+<li>边界条件解决好就可以</li>
+</ul>
+<h3 id="代码">代码</h3>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// you can use includes, for example:</span></span><br><span class="line"><span class="comment">// #include &lt;algorithm&gt;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="comment">// you can write to stdout for debugging purposes, e.g.</span></span><br><span class="line"><span class="comment">// cout &lt;&lt; &quot;this is a debug message&quot; &lt;&lt; endl;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">solution</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// write your code in C++14 (g++ 6.2.0)</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; A.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        A[i] += A[i<span class="number">-1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> ans = INT_MAX;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; A.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> l = A[i<span class="number">-1</span>];</span><br><span class="line">        <span class="keyword">int</span> r = A[A.size() - <span class="number">1</span>] - A[i<span class="number">-1</span>];</span><br><span class="line">        ans = min(ans, <span class="built_in">abs</span>(r-l));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="时间复杂度">时间复杂度</h3>
+<p><code>O(N)</code></p>
+]]></content>
+      <categories>
+        <category>Codility</category>
+      </categories>
+      <tags>
+        <tag>Codility</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Swift-Algorithm-Stack</title>
     <url>/2019/11/22/SwiftAlgorithm-Stack/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
@@ -1784,42 +1820,6 @@ A[6] = 4</code></pre>
       </categories>
       <tags>
         <tag>Swift</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>TapeEquilibrium</title>
-    <url>/2020/10/04/TapeEquilibrium/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://app.codility.com/demo/results/training73HB8G-ZEU/">TapeEquilibrium</a> A non-empty array A consisting of N integers is given. Array A represents numbers on a tape.</p>
-<p>Any integer P, such that 0 &lt; P &lt; N, splits this tape into two non-empty parts: A[0], A[1], ..., A[P − 1] and A[P], A[P + 1], ..., A[N − 1].</p>
-<p>The difference between the two parts is the value of: |(A[0] + A[1] + ... + A[P − 1]) − (A[P] + A[P + 1] + ... + A[N − 1])|</p>
-<p>In other words, it is the absolute difference between the sum of the first part and the sum of the second part.</p>
-<p>For example, consider array A such that:</p>
-<p>A[0] = 3 A[1] = 1 A[2] = 2 A[3] = 4 A[4] = 3 We can split this tape in four places:</p>
-<p>P = 1, difference = |3 − 10| = 7 P = 2, difference = |4 − 9| = 5 P = 3, difference = |6 − 7| = 1 P = 4, difference = |10 − 3| = 7 Write a function:</p>
-<p>int solution(vector<int> &amp;A);</p>
-<p>that, given a non-empty array A of N integers, returns the minimal difference that can be achieved.</p>
-<p>For example, given:</p>
-<p>A[0] = 3 A[1] = 1 A[2] = 2 A[3] = 4 A[4] = 3 the function should return 1, as explained above.</p>
-<p>Write an efficient algorithm for the following assumptions:</p>
-<p>N is an integer within the range [2..100,000]; each element of array A is an integer within the range [−1,000..1,000].</p>
-<a id="more"></a>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li>又给了一堆介绍，发现求前缀和可以解决区间和的问题</li>
-<li>边界条件解决好就可以</li>
-</ul>
-<h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// you can use includes, for example:</span></span><br><span class="line"><span class="comment">// #include &lt;algorithm&gt;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="comment">// you can write to stdout for debugging purposes, e.g.</span></span><br><span class="line"><span class="comment">// cout &lt;&lt; &quot;this is a debug message&quot; &lt;&lt; endl;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">solution</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// write your code in C++14 (g++ 6.2.0)</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; A.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        A[i] += A[i<span class="number">-1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> ans = INT_MAX;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; A.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> l = A[i<span class="number">-1</span>];</span><br><span class="line">        <span class="keyword">int</span> r = A[A.size() - <span class="number">1</span>] - A[i<span class="number">-1</span>];</span><br><span class="line">        ans = min(ans, <span class="built_in">abs</span>(r-l));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p><code>O(N)</code></p>
-]]></content>
-      <categories>
-        <category>Codility</category>
-      </categories>
-      <tags>
-        <tag>Codility</tag>
       </tags>
   </entry>
   <entry>
@@ -1874,25 +1874,6 @@ A[6] = 4</code></pre>
       <tags>
         <tag>LeetCode</tag>
         <tag>Easy</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>UpperBound</title>
-    <url>/2020/04/25/UpperBound/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="upperbound">UpperBound</h2>
-<p>Upper Bound 是使用二分查找的办法求 大于 i 的第一个位置 <a id="more"></a></p>
-<h2 id="代码">代码</h2>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">upperBound</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = nums.size();</span><br><span class="line">        <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span> (nums[mid] &gt; i) &#123;</span><br><span class="line">                r = mid;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                l = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p>O (logn)</p>
-<h3 id="空间复杂度">空间复杂度</h3>
-<p>O(1)</p>
-]]></content>
-      <categories>
-        <category>C++</category>
-      </categories>
-      <tags>
-        <tag>Algorithm</tag>
       </tags>
   </entry>
   <entry>
@@ -1972,6 +1953,25 @@ A[6] = 4</code></pre>
       </categories>
       <tags>
         <tag>Mac Develop</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>UpperBound</title>
+    <url>/2020/04/25/UpperBound/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="upperbound">UpperBound</h2>
+<p>Upper Bound 是使用二分查找的办法求 大于 i 的第一个位置 <a id="more"></a></p>
+<h2 id="代码">代码</h2>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">upperBound</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = nums.size();</span><br><span class="line">        <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span> (nums[mid] &gt; i) &#123;</span><br><span class="line">                r = mid;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                l = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="时间复杂度">时间复杂度</h3>
+<p>O (logn)</p>
+<h3 id="空间复杂度">空间复杂度</h3>
+<p>O(1)</p>
+]]></content>
+      <categories>
+        <category>C++</category>
+      </categories>
+      <tags>
+        <tag>Algorithm</tag>
       </tags>
   </entry>
   <entry>
@@ -2167,6 +2167,24 @@ A[6] = 4</code></pre>
     <url>/2020/11/08/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="背包九讲读书笔记">背包九讲读书笔记</h2>
 <h3 id="背包问题">0-1 背包问题</h3>
+<h5 id="基本题目套路">基本题目套路</h5>
+<p>有 <code>N</code> 件物品和一个容量为 <code>V</code> 的背包，放入第 <code>i</code> 件物品消耗的费用是 <code>Ci</code>， 得到的价值是 <code>Wi</code>。 求解将哪些物品装入背包可使总价值总和最大。</p>
+<h5 id="基本题目思路">基本题目思路</h5>
+<ul>
+<li>特点：每件物品只有一个，选择：放 or 不放。</li>
+<li>子问题：F[i, v]： 前 i 件物品恰好放入容量 v 的背包，可以获得的最大价值</li>
+<li>状态转移：F[i, v] = max{F[i-1, v], F[i-1, v-Ci] + Wi}</li>
+<li>当前的价值，只和之前的价值有关，因此两个选择下的价值为：</li>
+<li>如果 i 不选，价值：前 i-1 件，放入容量 v 的背包（F[i-1, v]）</li>
+<li>如果 i 选择，价值：前 i-1 件，放入容量（v-Ci）的背包（确保 i 能放下去，得减去 i 占用的容量）+ 放入 i 的价值 Wi</li>
+</ul>
+<h5 id="伪代码">伪代码</h5>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">F[<span class="number">0</span>, <span class="number">0.</span>.V] &lt;- <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i &lt;- <span class="number">1</span> to N</span><br><span class="line">    <span class="keyword">for</span> v &lt;- Ci to V</span><br><span class="line">        F[i, v] &lt;- max&#123;F[i<span class="number">-1</span>, v], F[i<span class="number">-1</span>, v-Ci] + Wi&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="优化">优化</h5>
+<p>时间复杂度：O(VN) 空间复杂度：滚动数组（逆序计算F[v]，才能保证正确的顺序）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">F[<span class="number">0.</span>.V] &lt;- <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i &lt;- <span class="number">1</span> to N</span><br><span class="line">    <span class="keyword">for</span> v &lt;- V to Ci</span><br><span class="line">        F[v] &lt;- max&#123;F[v], F[v-Ci] + Wi&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ZeroOnePack</span>(<span class="params">F,C,W</span>)</span></span><br><span class="line"><span class="function">    <span class="title">for</span> <span class="title">v</span> &lt;- <span class="title">V</span> <span class="title">to</span> <span class="title">C</span></span></span><br><span class="line"><span class="function">        <span class="title">F</span>[<span class="title">v</span>] &lt;- <span class="title">max</span>(<span class="params">F[v], F[C-v] + W</span>)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">F[<span class="number">0.</span>.V] &lt;- <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i &lt;- <span class="number">1</span> to N</span><br><span class="line">        ZeroOnePack(F,Ci,Wi)</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>背包问题</category>
