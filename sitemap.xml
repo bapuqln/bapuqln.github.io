@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://bapuqln.github.io/2020/10/25/RectanglesStrip/</loc>
+    <loc>https://bapuqln.github.io/2020/11/08/RectanglesStrip/</loc>
     
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://bapuqln.github.io/2020/11/08/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</loc>
+    
+    <lastmod>2020-11-08</lastmod>
     
   </url>
   
@@ -72,14 +79,14 @@
   </url>
   
   <url>
-    <loc>https://bapuqln.github.io/source/back/imp%E6%98%AF%E4%BB%80%E4%B9%88.html</loc>
+    <loc>https://bapuqln.github.io/source/back/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5.html</loc>
     
     <lastmod>2020-10-11</lastmod>
     
   </url>
   
   <url>
-    <loc>https://bapuqln.github.io/source/back/%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5.html</loc>
+    <loc>https://bapuqln.github.io/source/back/imp%E6%98%AF%E4%BB%80%E4%B9%88.html</loc>
     
     <lastmod>2020-10-11</lastmod>
     
@@ -534,14 +541,14 @@
   </url>
   
   <url>
-    <loc>https://bapuqln.github.io/2020/05/24/ConstructBinaryTreeFromPreorderAndPostorderTraversal/</loc>
+    <loc>https://bapuqln.github.io/2019/11/22/C-Object-Serialization/</loc>
     
     <lastmod>2020-10-11</lastmod>
     
   </url>
   
   <url>
-    <loc>https://bapuqln.github.io/2019/11/22/C-Object-Serialization/</loc>
+    <loc>https://bapuqln.github.io/2020/05/24/ConstructBinaryTreeFromPreorderAndPostorderTraversal/</loc>
     
     <lastmod>2020-10-11</lastmod>
     
@@ -634,7 +641,7 @@
 
   <url>
     <loc>https://bapuqln.github.io/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -642,140 +649,147 @@
   
   <url>
     <loc>https://bapuqln.github.io/tags/LeetCode/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/Medium/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/Hard/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/Codility/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/Bit-Manupulate/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/C/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/iOS/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/NSDictionary/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/FishHook/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/%E5%8D%95%E4%BE%8B/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/Algorithm/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/Mac-Develop/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/Swift/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/Easy/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/VSCode/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/Weakly-Contest/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/Dynamic-Programming/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/%E5%90%AF%E5%8A%A8%E9%80%9F%E5%BA%A6/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://bapuqln.github.io/tags/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/</loc>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/SuperSign/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/tags/%E8%B6%85%E7%BA%A7%E7%AD%BE%E5%90%8D/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -784,84 +798,91 @@
   
   <url>
     <loc>https://bapuqln.github.io/categories/LeetCode/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/categories/Codility/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/categories/C/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/categories/%E7%9E%8E%E9%80%BC%E9%80%BC/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/categories/iOS/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/categories/Mac-Develop/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/categories/Mac-Develop/Swift/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/categories/Binary-Tree/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/categories/Algorithm/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/categories/Algorithm/Swift/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/categories/VSCode/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://bapuqln.github.io/categories/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/</loc>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://bapuqln.github.io/categories/Super-Sign/</loc>
-    <lastmod>2020-10-25</lastmod>
+    <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
