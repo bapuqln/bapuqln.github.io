@@ -462,6 +462,20 @@ K = 4</code></pre>
       </tags>
   </entry>
   <entry>
+    <title>FishHook 学习笔记</title>
+    <url>/2019/12/25/Dynamic-Library/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>0x0 什么是dyld dyld 是加载Mach-O的库，入口是<code>_dyld_start</code>,</p>
+<a id="more"></a>
+]]></content>
+      <categories>
+        <category>瞎逼逼</category>
+      </categories>
+      <tags>
+        <tag>iOS</tag>
+        <tag>FishHook</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>DynamicProgramming</title>
     <url>/2020/06/04/DynamicProgramming/</url>
     <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="动态规划套路">动态规划套路</h2>
@@ -599,20 +613,6 @@ K = 4</code></pre>
       <tags>
         <tag>LeetCode</tag>
         <tag>Medium</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>FishHook 学习笔记</title>
-    <url>/2019/12/25/Dynamic-Library/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>0x0 什么是dyld dyld 是加载Mach-O的库，入口是<code>_dyld_start</code>,</p>
-<a id="more"></a>
-]]></content>
-      <categories>
-        <category>瞎逼逼</category>
-      </categories>
-      <tags>
-        <tag>iOS</tag>
-        <tag>FishHook</tag>
       </tags>
   </entry>
   <entry>
@@ -794,6 +794,70 @@ K = 4</code></pre>
       <tags>
         <tag>LeetCode</tag>
         <tag>Medium</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Groking The coding Interview</title>
+    <url>/2020/11/16/GrokingTheCodeInterview/</url>
+    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="滑动窗口">滑动窗口</h2>
+<p><a href="https://leetcode.com/problems/add-two-numbers/">AddTwoNumbers</a> You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.</p>
+<p>You may assume the two numbers do not contain any leading zero, except the number 0 itself.</p>
+<p>Example:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)</span><br><span class="line">Output: 7 -&gt; 0 -&gt; 8</span><br><span class="line">Explanation: 342 + 465 = 807.</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="解题报告">解题报告</h2>
+<h3 id="理解题意">理解题意</h3>
+<ul>
+<li><code>2</code> 个 <code>非空</code>链表，长度可能不相等</li>
+<li>每个链表为<code>逆序</code></li>
+<li>返回两个链表的和</li>
+<li>每个元素应该为正数</li>
+</ul>
+<h3 id="理解例子">理解例子</h3>
+<ul>
+<li><code>2 -&gt; 4 -&gt; 3</code> = <code>342</code></li>
+<li><code>5 -&gt; 6 -&gt; 4</code> = <code>465</code></li>
+<li><code>342 + 465 = 807</code></li>
+<li>答案 : <code>7 -&gt; 0 -&gt; 8</code></li>
+</ul>
+<h3 id="思路">思路</h3>
+<ul>
+<li>将每一个链表变成整形，然后相加，结果分解成链表不大合适，还得处理越界的情况</li>
+<li>比较合理的办法：是一边遍历一边生成链表</li>
+<li>每一个生成的节点为两个数的和，有可能产生进位: 如 <code>7+8=15</code></li>
+<li>一个节点的结果为：<code>sum = 前一个节点的进位+两个节点的和</code>，<code>res = sum % 10</code>;</li>
+<li>一个节点的结果几种情况
+<ul>
+<li><code>last_carry + left + right &lt; 10</code></li>
+<li><code>last_carry + left + right &gt;= 10</code></li>
+<li><code>只要有进位，就一定会有一个新的节点出现</code></li>
+</ul></li>
+</ul>
+<h3 id="代码">代码</h3>
+<h4 id="非递归">非递归</h4>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!l1) <span class="keyword">return</span> l2;</span><br><span class="line">        <span class="keyword">if</span> (!l2) <span class="keyword">return</span> l1;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> carry = <span class="number">0</span>;</span><br><span class="line">        <span class="function">ListNode <span class="title">dummy</span><span class="params">(<span class="number">0</span>)</span></span>;</span><br><span class="line">        ListNode *head = &amp;dummy;</span><br><span class="line">        <span class="keyword">while</span> (l1 || l2 || carry) &#123;</span><br><span class="line">            <span class="keyword">int</span> sum = (l1 ? l1-&gt;val : <span class="number">0</span>) + (l2 ? l2-&gt;val : <span class="number">0</span>) + carry;</span><br><span class="line">            head-&gt;next = <span class="keyword">new</span> ListNode (sum % <span class="number">10</span>);</span><br><span class="line">            head = head-&gt;next;</span><br><span class="line">            carry = sum / <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (l1) l1 = l1-&gt;next;</span><br><span class="line">            <span class="keyword">if</span> (l2) l2 = l2-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> dummy.next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ListNode</span> </span>&#123;</span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">var</span> val: <span class="type">Int</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">var</span> next: <span class="type">ListNode?</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">init</span>(<span class="number">_</span> val: <span class="type">Int</span>) &#123;</span><br><span class="line">     <span class="keyword">self</span>.val = val</span><br><span class="line">     <span class="keyword">self</span>.next = <span class="literal">nil</span></span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">addTwoNumbers</span><span class="params">(<span class="number">_</span> l1: ListNode?, <span class="number">_</span> l2: ListNode?)</span></span> -&gt; <span class="type">ListNode?</span> &#123;</span><br><span class="line">    	<span class="keyword">var</span> l1 = l1</span><br><span class="line">        <span class="keyword">var</span> l2 = l2</span><br><span class="line">        <span class="keyword">var</span> prev = <span class="type">ListNode</span>(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">var</span> carry = <span class="number">0</span></span><br><span class="line">        <span class="keyword">let</span> head = prev</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> l1 != <span class="literal">nil</span> || l2 != <span class="literal">nil</span> || carry != <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> cur = <span class="type">ListNode</span>(<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">let</span> sum = (l2 == <span class="literal">nil</span> ? <span class="number">0</span> : l2!.val) + (l1 == <span class="literal">nil</span> ? <span class="number">0</span> : l1!.val) + carry</span><br><span class="line">            cur.val = sum % <span class="number">10</span></span><br><span class="line">            carry = sum / <span class="number">10</span></span><br><span class="line">            prev.next = cur</span><br><span class="line">            prev = cur</span><br><span class="line">            l1 = l1 == <span class="literal">nil</span> ? l1: l1?.next</span><br><span class="line">            l2 = l2 == <span class="literal">nil</span> ? l2: l2?.next</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> head.next</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="递归">递归</h4>
+<p>这道题比较简单，递归模式也比较好想到 加法需要三个值，两个操作符（来自两个链表）以及一个进位标记。 因此递归模式为：</p>
+<ul>
+<li>递归出口：两个链表都已经到达末尾，并且没有进位</li>
+<li>递归实现：
+<ul>
+<li>当前节点的结果为：和/10</li>
+<li>当前节点的next节点为：对于两个链表next节点的计算的结果</li>
+</ul></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2, <span class="keyword">int</span> carry)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!l1 &amp;&amp; !l2 &amp;&amp; !carry) <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="keyword">int</span> sum = (l1?l1-&gt;val:<span class="number">0</span>) + (l2?l2-&gt;val:<span class="number">0</span>) + carry;</span><br><span class="line">        ListNode *ans = <span class="keyword">new</span> ListNode(sum % <span class="number">10</span>);</span><br><span class="line">        ans-&gt;next = addTwoNumbers(l1?l1-&gt;next:<span class="literal">nullptr</span>, l2?l2-&gt;next:<span class="literal">nullptr</span>, sum / <span class="number">10</span>);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">addTwoNumbers</span><span class="params">(ListNode* l1, ListNode* l2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> addTwoNumbers(l1, l2, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="时间复杂度">时间复杂度</h3>
+<p>遍历次数：<code>max(len(l1), len(l2)) + 1</code>，因此是线性时间 \(\)</p>
+<h3 id="空间复杂度">空间复杂度</h3>
+<p>额外申请了和一个链表，因此空间复杂度也为 \(\)</p>
+]]></content>
+      <categories>
+        <category>Groking The Coding Interview</category>
+      </categories>
+      <tags>
+        <tag>educative.io</tag>
       </tags>
   </entry>
   <entry>
@@ -1646,853 +1710,4 @@ A[6] = 4</code></pre>
 <li>在元组中出现最高频的数字记录下来，即为结果</li>
 </ul>
 <h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// you can use includes, for example:</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="comment">// you can write to stdout for debugging purposes, e.g.</span></span><br><span class="line"><span class="comment">// cout &lt;&lt; &quot;this is a debug message&quot; &lt;&lt; endl;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">solution</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;B)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// write your code in C++14 (g++ 6.2.0)</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> m = A.size();</span><br><span class="line">    <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; freqs;</span><br><span class="line">    <span class="keyword">int</span> maxFreq = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> n: A)</span><br><span class="line">        freqs[n]++;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> n: B)</span><br><span class="line">        freqs[n]++;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">pair</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; &gt; vec;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        vec.push_back(<span class="built_in">make_pair</span>(A[i], B[i]));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = freqs.begin(); it != freqs.end(); it++) &#123;</span><br><span class="line">        maxFreq = max(maxFreq, it-&gt;second);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> pic = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = freqs.begin(); it != freqs.end(); it++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (it-&gt;second == maxFreq) &#123;</span><br><span class="line">            pic = it-&gt;first;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; vec.size(); i++) &#123;</span><br><span class="line">        <span class="built_in">pair</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; p = vec[i];</span><br><span class="line">        <span class="keyword">if</span> (p.first == pic || p.second == pic)</span><br><span class="line">            ans++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure>
-<img src="/images/QQ20201021-0.png" alt="结果" /><figcaption aria-hidden="true">结果</figcaption>
-</figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p><code>O(N)</code></p>
-]]></content>
-      <categories>
-        <category>Codility</category>
-      </categories>
-      <tags>
-        <tag>Medium</tag>
-        <tag>Codility</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Single Number II</title>
-    <url>/2020/05/30/SingleNumberII/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://leetcode.com/problems/single-number-ii/">Single Number II</a> Given a non-empty array of integers, every element appears three times except for one, which appears exactly once. Find that single one.</p>
-<p>Note:</p>
-<p>Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?</p>
-<p>Example 1:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: [2,2,3,2]</span><br><span class="line">Output: 3</span><br></pre></td></tr></table></figure>
-<p>Example 2: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: [0,1,0,1,0,1,99]</span><br><span class="line">Output: 99</span><br></pre></td></tr></table></figure> <a id="more"></a></p>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li>给定一个数组，里面的元素均出现了 <code>K(K &gt; 1)</code> 次,出了一个元素出现 P(P&gt;=1 , P % K != 0) 次，让找到这个元素。 gi</li>
-</ul>
-<h3 id="思路">思路</h3>
-<ul>
-<li>首先构建一个计数器，可以实现对 01 数组进行计数，每次遇见1 counter 自增，如果自增至 K，则 counter 重至为 0 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">counter</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> array:</span><br><span class="line">        <span class="keyword">if</span> i:</span><br><span class="line">            count += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> counter == k:</span><br><span class="line">            count = <span class="number">0</span></span><br></pre></td></tr></table></figure></li>
-<li>那么什么位操作遇到 0 不变，遇到 1 自增，也就是资深取反（因为自增碰到 1 会变成 0）</li>
-<li>对于某一位数字 0 或者 1 来讲：</li>
-<li>碰到 0 不变的操作有两个： <code>x = x | 0</code> 另一个是 <code>x = x ^ 0</code></li>
-<li>但异或(<code>XOR</code>)操作明显更加合适: <code>1 ^ 1 = 0</code> , <code>0 ^ 1 = 1</code>, <code>0 ^ 0 = 0</code></li>
-<li>因此对于 <code>counter</code> 来讲， <code>counter = counter ^ 1</code></li>
-<li></li>
-<li>但题目需要覆盖 K 位，那就是  <code>2 ^ m &gt;= K</code>，因此需要 最少 <code>logk</code> 个</li>
-<li>因此 m 位从高到低为<code>C[m], C[m-1],... C[1]</code></li>
-<li>对于最低位 : <code>C[1] = C[1] ^ i</code>;</li>
-<li>对于<code>C[2]</code>，只有前一位为 1 的时候才进位，<code>C[2] = C[2] ^ (C[1] &amp; i)</code></li>
-<li>对于<code>C[k]</code>, 进位条件 <code>i == 1 &amp;&amp; C[j] == 1 for all j &lt; k</code> <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> array:</span><br><span class="line">        C[m] ^= (c[m<span class="number">-1</span>] &amp; c[m<span class="number">-2</span>] &amp; .... C[<span class="number">1</span>] &amp; i)</span><br><span class="line">        ...</span><br><span class="line">        C[<span class="number">2</span>] ^= C[<span class="number">1</span>] &amp; i</span><br><span class="line">        C[<span class="number">1</span>] ^= i</span><br><span class="line">        // 要从最高位开始更新</span><br></pre></td></tr></table></figure></li>
-<li>但更新策略还不完整，需要达到阈值的时候变成 0</li>
-<li>因此需要一个 <code>mask = 0 if counter == k else 1</code></li>
-<li>于是每次更新的时候 <code>C[i] &amp; mask</code></li>
-<li>假设 k 的二进制形式为 k[m], k[m-1]...k[1]</li>
-<li>那么 <code>mask =  ~(y1 &amp; y2 ... &amp; ym) where yj = cj if kj = 1 else yj = ~ cj</code></li>
-<li>这样子的话当c == k时，yj全部等于1，mask值为0，而 c != k时，yj必不全为1，则mask值必为1. <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i in <span class="built_in">array</span>:</span><br><span class="line"> 	c[m] ^= (c[m<span class="number">-1</span>] &amp; c[m<span class="number">-2</span>] &amp; ... &amp; c[<span class="number">1</span>] &amp; i)</span><br><span class="line">   ...</span><br><span class="line">   c[<span class="number">2</span>] ^= (c[<span class="number">1</span>] &amp; i)</span><br><span class="line">   c[<span class="number">1</span>] ^= i  # 注意要先从高位开始更新</span><br><span class="line"></span><br><span class="line">   <span class="keyword">for</span> j in range(m):</span><br><span class="line">     	y[j] = c[j] <span class="keyword">if</span> k[j] <span class="keyword">else</span> ~c[j]</span><br><span class="line">   mask = ~(y[<span class="number">1</span>] &amp; y[<span class="number">2</span>] ... &amp; y[m])</span><br><span class="line"></span><br><span class="line">   <span class="keyword">for</span> j in range(m):</span><br><span class="line">     	c[m] &amp;= mask</span><br><span class="line">       ...</span><br><span class="line">       c[<span class="number">1</span>] &amp;= mask</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">c1 = <span class="number">0</span></span><br><span class="line">c2 = <span class="number">0</span></span><br><span class="line">m = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i in nums:</span><br><span class="line">  	c2 ^= c1 &amp; i</span><br><span class="line">    c1 ^= i</span><br><span class="line">    mask = ~(c1 &amp; c2) # k = <span class="number">3</span>, 二进制形式为<span class="number">11</span>，则c1和c2都不用取反</span><br><span class="line">    c1 &amp;= mask</span><br><span class="line">    c2 &amp;= mask</span><br><span class="line"><span class="keyword">return</span> c1 # p = <span class="number">1</span>, 则最后c1 = single</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Medium</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SweepLine</title>
-    <url>/2020/09/21/SweepLine/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="起因">起因</h2>
-<p>今天做了一道题，<a href="https://leetcode.com/problems/subarray-sum-equals-k/">LeetCode 560. Subarray Sum Equals K</a>，有点蒙蔽，看了答案发现比较简单，记录一下</p>
-<p>给定一个整数数组和一个整数 <code>k</code>，你需要找到该数组中和为 <code>k</code> 的连续的子数组的个数。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">示例 1 :</span><br><span class="line"></span><br><span class="line">输入:nums = [1,1,1], k = 2</span><br><span class="line">输出: 2 , [1,1] 与 [1,1] 为两种不同的情况。</span><br><span class="line">说明 :</span><br><span class="line"></span><br><span class="line">数组的长度为 [1, 20,000]。</span><br><span class="line">数组中元素的范围是 [-1000, 1000] ，且整数 k 的范围是 [-1e7, 1e7]。</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<h3 id="题解">题解</h3>
-<p>题目的意思比较明确，要求找到 <code>n</code> 个连续的子数组，并且这些连续子数组的和为 <code>k</code></p>
-<ul>
-<li>子数组求和</li>
-<li>子数组求和可以使用前缀和，那么如何知道它能够满足需求? 前缀和可以知道具体区间的和，那么区间终点的值 -k，就是这段区间的起点。</li>
-<li>需要一个哈希表，来记录上次出现该值得地方，找到 <code>cur-k</code> 就是找到了和位 <code>k</code> 的区间起点。</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">subArraySum</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>, pre = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; memo_;</span><br><span class="line">    memo_[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;num : nums) &#123;</span><br><span class="line">      pre += num;</span><br><span class="line">      <span class="keyword">if</span> (memo_.find(pre - k) != memo_.end()) &#123;</span><br><span class="line">        ans += memo_[pre - k];</span><br><span class="line">      &#125;</span><br><span class="line">      memo_[pre]++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Medium</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Swift-Algorithm-Stack</title>
-    <url>/2019/11/22/SwiftAlgorithm-Stack/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://leetcode.com/problems/two-sum/">TwoSum</a> Given an array of integers, return indices of the two numbers such that they add up to a specific target.</p>
-<p>You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
-<p>Example:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Given nums = [2, 7, 11, 15], target = 9,</span><br><span class="line"></span><br><span class="line">Because nums[0] + nums[1] = 2 + 7 = 9,</span><br><span class="line"><span class="built_in">return</span> [0, 1].</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li><code>整形</code>数组 <code>nums</code></li>
-<li>是否有序未知</li>
-<li>\(=- | idx1 idx2\)</li>
-<li>一定有解</li>
-<li>同样元素不能用两次</li>
-</ul>
-<h3 id="理解例子">理解例子</h3>
-<ul>
-<li><code>nums = [2, 7, 11, 15]</code></li>
-<li><code>target = 9</code></li>
-<li>对于 <code>idx = 0</code>. <code>nums[idx] = 2</code></li>
-<li>需要找到 <code>nums[idx2] = target - nums[idx]</code> --&gt; <code>7</code></li>
-<li><code>nums[idx2] = 7</code> <code>idx2 = 1</code></li>
-<li><code>[0, 1]</code></li>
-</ul>
-<h3 id="思路">思路</h3>
-<ul>
-<li>例子中，找到 <code>target-nums[idx]</code> 并不够，还要找到 <code>target-nums[idx]</code> 对应的<code>index</code></li>
-<li>因此需要建立 <code>index</code> 和 <code>value</code> 的关系</li>
-<li>关系建立好之后</li>
-<li>对于每一个元素 <code>idx</code> ，查找 <code>target-nums[idx]</code> 以及对应的<code>index</code></li>
-<li>找到就返回结果，未找到返回空</li>
-<li>出入参合法性判断</li>
-<li>需要的数据结构：</li>
-<li><code>unordered_map&lt;int,int&gt;</code> 哈希表，分别存放 <code>value,index</code></li>
-</ul>
-<h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">twoSum</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(nums.empty()) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; map_;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.size(); i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!map_.count(nums[i])) &#123;</span><br><span class="line">                map_[nums[i]] = i;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">int</span> num_to_find = target-nums[i];</span><br><span class="line">            <span class="keyword">if</span> (map_.count(num_to_find) &amp;&amp; map_[num_to_find] != i) &#123;</span><br><span class="line">                <span class="keyword">return</span> &#123;i, map_[num_to_find]&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p>每个元素只遍历一次，因此是线性时间 \(\)</p>
-<h3 id="空间复杂度">空间复杂度</h3>
-<p>额外申请了和数组长度一样的哈希表，因此空间复杂度也为 \(\)</p>
-]]></content>
-      <categories>
-        <category>Algorithm</category>
-        <category>Swift</category>
-      </categories>
-      <tags>
-        <tag>Swift</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>TapeEquilibrium</title>
-    <url>/2020/10/04/TapeEquilibrium/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://app.codility.com/demo/results/training73HB8G-ZEU/">TapeEquilibrium</a> A non-empty array A consisting of N integers is given. Array A represents numbers on a tape.</p>
-<p>Any integer P, such that 0 &lt; P &lt; N, splits this tape into two non-empty parts: A[0], A[1], ..., A[P − 1] and A[P], A[P + 1], ..., A[N − 1].</p>
-<p>The difference between the two parts is the value of: |(A[0] + A[1] + ... + A[P − 1]) − (A[P] + A[P + 1] + ... + A[N − 1])|</p>
-<p>In other words, it is the absolute difference between the sum of the first part and the sum of the second part.</p>
-<p>For example, consider array A such that:</p>
-<p>A[0] = 3 A[1] = 1 A[2] = 2 A[3] = 4 A[4] = 3 We can split this tape in four places:</p>
-<p>P = 1, difference = |3 − 10| = 7 P = 2, difference = |4 − 9| = 5 P = 3, difference = |6 − 7| = 1 P = 4, difference = |10 − 3| = 7 Write a function:</p>
-<p>int solution(vector<int> &amp;A);</p>
-<p>that, given a non-empty array A of N integers, returns the minimal difference that can be achieved.</p>
-<p>For example, given:</p>
-<p>A[0] = 3 A[1] = 1 A[2] = 2 A[3] = 4 A[4] = 3 the function should return 1, as explained above.</p>
-<p>Write an efficient algorithm for the following assumptions:</p>
-<p>N is an integer within the range [2..100,000]; each element of array A is an integer within the range [−1,000..1,000].</p>
-<a id="more"></a>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li>又给了一堆介绍，发现求前缀和可以解决区间和的问题</li>
-<li>边界条件解决好就可以</li>
-</ul>
-<h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// you can use includes, for example:</span></span><br><span class="line"><span class="comment">// #include &lt;algorithm&gt;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="comment">// you can write to stdout for debugging purposes, e.g.</span></span><br><span class="line"><span class="comment">// cout &lt;&lt; &quot;this is a debug message&quot; &lt;&lt; endl;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">solution</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// write your code in C++14 (g++ 6.2.0)</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; A.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">        A[i] += A[i<span class="number">-1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> ans = INT_MAX;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; A.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> l = A[i<span class="number">-1</span>];</span><br><span class="line">        <span class="keyword">int</span> r = A[A.size() - <span class="number">1</span>] - A[i<span class="number">-1</span>];</span><br><span class="line">        ans = min(ans, <span class="built_in">abs</span>(r-l));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p><code>O(N)</code></p>
-]]></content>
-      <categories>
-        <category>Codility</category>
-      </categories>
-      <tags>
-        <tag>Codility</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>TwoSum</title>
-    <url>/2019/11/22/TwoSum/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://leetcode.com/problems/two-sum/">TwoSum</a> Given an array of integers, return indices of the two numbers such that they add up to a specific target.</p>
-<p>You may assume that each input would have exactly one solution, and you may not use the same element twice.</p>
-<p>Example:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Given nums = [2, 7, 11, 15], target = 9,</span><br><span class="line"></span><br><span class="line">Because nums[0] + nums[1] = 2 + 7 = 9,</span><br><span class="line"><span class="built_in">return</span> [0, 1].</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li><code>整形</code>数组 <code>nums</code></li>
-<li>是否有序未知</li>
-<li>\(=- | idx1 idx2\)</li>
-<li>一定有解</li>
-<li>同样元素不能用两次</li>
-</ul>
-<h3 id="理解例子">理解例子</h3>
-<ul>
-<li><code>nums = [2, 7, 11, 15]</code></li>
-<li><code>target = 9</code></li>
-<li>对于 <code>idx = 0</code>. <code>nums[idx] = 2</code></li>
-<li>需要找到 <code>nums[idx2] = target - nums[idx]</code> --&gt; <code>7</code></li>
-<li><code>nums[idx2] = 7</code> <code>idx2 = 1</code></li>
-<li><code>[0, 1]</code></li>
-</ul>
-<h3 id="思路">思路</h3>
-<ul>
-<li>例子中，找到 <code>target-nums[idx]</code> 并不够，还要找到 <code>target-nums[idx]</code> 对应的<code>index</code></li>
-<li>因此需要建立 <code>index</code> 和 <code>value</code> 的关系</li>
-<li>关系建立好之后</li>
-<li>对于每一个元素 <code>idx</code> ，查找 <code>target-nums[idx]</code> 以及对应的<code>index</code></li>
-<li>找到就返回结果，未找到返回空</li>
-<li>出入参合法性判断</li>
-<li>需要的数据结构：</li>
-<li><code>unordered_map&lt;int,int&gt;</code> 哈希表，分别存放 <code>value,index</code></li>
-</ul>
-<h3 id="代码">代码</h3>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">twoSum</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(nums.empty()) <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">        <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; map_;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.size(); i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!map_.count(nums[i])) &#123;</span><br><span class="line">                map_[nums[i]] = i;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">int</span> num_to_find = target-nums[i];</span><br><span class="line">            <span class="keyword">if</span> (map_.count(num_to_find) &amp;&amp; map_[num_to_find] != i) &#123;</span><br><span class="line">                <span class="keyword">return</span> &#123;i, map_[num_to_find]&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">twoSum</span><span class="params">(<span class="number">_</span> nums: [Int], <span class="number">_</span> target: Int)</span></span> -&gt; [<span class="type">Int</span>] &#123;</span><br><span class="line">        <span class="keyword">var</span> dict = [<span class="type">Int</span>:<span class="type">Int</span>]()</span><br><span class="line">        <span class="keyword">for</span> (i, num) <span class="keyword">in</span> nums.enumerated() &#123;</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">let</span> lastIdx = dict[target - num] &#123;</span><br><span class="line">                <span class="keyword">return</span> [lastIdx, i]</span><br><span class="line">            &#125;</span><br><span class="line">            dict[num] = i</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p>每个元素只遍历一次，因此是线性时间 \(\)</p>
-<h3 id="空间复杂度">空间复杂度</h3>
-<p>额外申请了和数组长度一样的哈希表，因此空间复杂度也为 \(\)</p>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Easy</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>UpperBound</title>
-    <url>/2020/04/25/UpperBound/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="upperbound">UpperBound</h2>
-<p>Upper Bound 是使用二分查找的办法求 大于 i 的第一个位置 <a id="more"></a></p>
-<h2 id="代码">代码</h2>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">upperBound</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = nums.size();</span><br><span class="line">        <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span> (nums[mid] &gt; i) &#123;</span><br><span class="line">                r = mid;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                l = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p>O (logn)</p>
-<h3 id="空间复杂度">空间复杂度</h3>
-<p>O(1)</p>
-]]></content>
-      <categories>
-        <category>C++</category>
-      </categories>
-      <tags>
-        <tag>Algorithm</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>VIPER架构落地IM</title>
-    <url>/2020/10/11/VIPER%E6%9E%B6%E6%9E%84%E8%90%BD%E5%9C%B0%E5%88%B0IM/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="问题由来">问题由来</h2>
-<p>来新公司也大半年了，发现之前的工程实现的非常不合理，维护成本极高，内部吐槽严重，<code>BUG</code> 叠 <code>BUG</code>，修老 <code>BUG</code> 引入的新 <code>BUG</code> 层出不穷，质量堪忧。</p>
-<h2 id="pros-cons">Pros &amp; Cons</h2>
-<p>拿到代码后简单的看了一下:</p>
-<ul>
-<li>使用 <code>MVC</code> 模式，并且由于<code>各种原因</code>，说白了就是写的挫。将 <code>MCV(Model-View-Controller)</code> 写成了 <code>MVC(Massive View Controller)</code></li>
-<li><code>View Controller</code> 写的极为笨重，几乎流程都写在几个比较大的 <code>View Controller</code> 中。牵一发而动全身，能不出错么。</li>
-<li>目前的时机比较不错，新项目要开始了，及得想办法复用之前的逻辑，又得写的没什么问题。</li>
-<li>很久不写这种流程了，还是需要仔细的回归练习一下，而且还能练练 swift，何乐而不为呢</li>
-</ul>
-<h2 id="viper-结构简介">VIPER 结构简介</h2>
-<p><code>VIPER</code> 是视图 (<code>View</code>)，交互器 (<code>Interactor</code>)，展示器 (<code>Presenter</code>)，实体 (<code>Entity</code>) 以及路由 (<code>Routing</code>) 的首字母缩写。这样根据逻辑结构的不同可以划分为不同的责任层。使得依赖更容易隔离，比如说数据库，也更容易单独测试，边界清晰。 他们的关系大概是这样的 如下图所示：</p>
-<figure>
-<img src="/images/viper_arch.png" alt="VIPER" /><figcaption aria-hidden="true">VIPER</figcaption>
-</figure>
-<h2 id="为什么要用-viper">为什么要用 VIPER</h2>
-<p>互联网企业都要求快速迭代，要求周期短，质量高。如何快速的在满足需求的前提下下交付质量好的产品，是大家都想解决的问题。对于一个处于一线的程序员来讲，从根上推动整个流程的变化是不切实际的。比较稳妥且的办法是采用技术手段来提高自己的效率，降低出错的概率。 对于源源不断的需求，以及不断的需求变化。除了默默的问候这些 PM，不还是得一个字一个字的敲出来。做的不好，大家会怀疑你的能力。面子上挂不住。活那么多，身体抗不住，身为一个快乐的程序员，在减少秃头的情况下得想办法让自己轻松点嘛。</p>
-<h3 id="步入正题">步入正题</h3>
-<ul>
-<li>VIPER 的好处就是模块之前关系比较松散，模块划分清晰，几乎做到了彻底解耦。每个（VIPER）子模块都可以单独的测试，</li>
-<li>避免掉了 MVC -&gt; M(assive)VC 的情况，VC 里面几乎就是个接口调用，几乎就是完成业务流程的胶水代码，而且都是 Protocol 的接口，业务比较清晰。</li>
-<li>数据模型的处理，单独的放到了 Interactor 内部，这一块对于其他模块几乎是透明。</li>
-<li>VC 彻底细化为View 和 Presenter，三者的交互可以参考 MVP 模式，不多说。</li>
-<li>Router 作为业务的入口和跳转的枢纽，将跳转逻辑也吃掉了。</li>
-<li>最终 VIPER 化之后，代码量会变多、文件会变多，逻辑变得清晰可维护。</li>
-<li>不同的 VIPER 模块 通信只有两个途径，一个是通过 ROUTER，另一个是通过 INTERACTOR</li>
-</ul>
-<h3 id="开始落地">开始落地</h3>
-<h4 id="设计图">设计图</h4>
-<ul>
-<li><p><a href="https://github.com/bapuqln/XCode-Template-Viper-Mac">VIPER 模板</a> 每次手工新建五个文件着实比较蛋疼，那么使用 XCode 模板每次自动新建不是很爽。链接就是新建好的模板。方便省事，目前只有 Mac 版本，改吧改吧 iOS 版本也不是啥难事</p></li>
-<li><p>以聊天页为例 VIPER 落地 <img src="/images/chat-view.svg" alt="设计图" /></p></li>
-</ul>
-<ol type="1">
-<li>从图中可以看到该页面比较简单，聊天页面大概分两个部分，左边应该是 thread 列表，右边是 消息流。</li>
-<li>窗体的样式几乎都是自定义的。</li>
-<li>顶部存在多 TAB，方便切换不同的显示内容。</li>
-<li>由于是 IM，那就存在登陆和非登陆，因此需要目前两个 VIPER 模块。</li>
-<li>从设计来看，各种 UI 组件都需要自定义，因此需要提供一个 UI 基础组件库，给工程提供子弹。吃掉 UI 的内部细节。只要对外提供行为即可。</li>
-</ol>
-<h4 id="登陆-viper-结构">登陆 VIPER 结构</h4>
-<ul>
-<li><p>登陆需要简单的输入用户名和密码，然后呢对于登陆成功的状况，会有账户维护和消息同步。</p></li>
-<li><p>设计有要求在登录页内部玩各种花活。因此目前沟通后，登录页划分为登陆输入页，和登陆行为页，两个页面的逻辑和流程不大一样。</p></li>
-<li><p>登陆输入页的协议定义如下</p></li>
-</ul>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// MARK: Wireframe - 这块 Wireframe 就是 ROUTER</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">AZLoginMainWireframeProtocol</span>: <span class="title">class</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// MARK: Presenter -</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">AZLoginMainViewPresenterProtocol</span>: <span class="title">class</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 目前只有注册的行为，因此定义好接口供 VC 使用</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">startRegistration</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MARK: Interactor -</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">AZLoginMainInteractorProtocol</span>: <span class="title">class</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> presenter: <span class="type">AZLoginMainViewPresenterProtocol?</span> &#123; <span class="keyword">get</span> <span class="keyword">set</span> &#125;</span><br><span class="line">    <span class="comment">//给 PRESENTER 提供的接口，真正的注册行为是在 INTERACTOR 中发生的</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">startRegistration</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MARK: View -</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">AZLoginMainViewProtocol</span>: <span class="title">class</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> presenter: <span class="type">AZLoginMainViewPresenterProtocol?</span> &#123; <span class="keyword">get</span> <span class="keyword">set</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure>
-<img src="/images/login-viper.png" alt="登陆页" /><figcaption aria-hidden="true">登陆页</figcaption>
-</figure>
-<ul>
-<li>登陆行为页</li>
-</ul>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// MARK: Wireframe -</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">AZLoginActionWireframeProtocol</span>: <span class="title">class</span> </span>&#123;</span><br><span class="line">    <span class="comment">//根据业务需要，这块有可能需要直接的显示到主界面</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">showMainWindow</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// MARK: Presenter -</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">AZLoginActionPresenterProtocol</span>: <span class="title">class</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 给 VC 提供的接口可以注册和忘记密码，并且在登陆成功后可以有接口给 INTERACTOR 调用(finish)</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">login</span><span class="params">(email: String?, password: String?)</span></span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">finished</span><span class="params">(login error: AZError?)</span></span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">forgetPassword</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MARK: Interactor -</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">AZLoginActionInteractorProtocol</span>: <span class="title">class</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> presenter: <span class="type">AZLoginActionPresenterProtocol?</span> &#123; <span class="keyword">get</span> <span class="keyword">set</span> &#125;</span><br><span class="line">    <span class="comment">// 真正的接口，具体的行为是在 INTERACTOR 中发生的，</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">login</span><span class="params">(email: String?, password: String?)</span></span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">forgetPassword</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MARK: View -</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">AZLoginActionViewProtocol</span>: <span class="title">class</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> presenter: <span class="type">AZLoginActionPresenterProtocol?</span> &#123; <span class="keyword">get</span> <span class="keyword">set</span> &#125;</span><br><span class="line">    <span class="comment">// 更新 View 的接口</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">loginError</span><span class="params">(<span class="number">_</span> error: AZError)</span></span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">closeWindow</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>一个简单的功能，写了这么多是不是很蛋疼，明明只需要一个 VC 就可以搞定的事情，非得这么麻烦么？</p>
-</blockquote>
-<p>其实在真正实现之后，发现除了文件多点以为，登陆的逻辑和流程非常清晰，真正地做到了代码自解释，不同结构之间通过接口来实现交互。将与其他模块无关的功能对外隐藏,而且真正的收益是在整个工程的逻辑和功能变得越来越复杂之后才体现出来。</p>
-<h4 id="聊天-viper">聊天 VIPER</h4>
-<p>登陆成功后，界面会由登陆 VIPER 模块路由到主界面 VIPER，如下图，那么界面就可以正常的切换过来了</p>
-<figure>
-<img src="/images/router-viper.png" alt="路由切换" /><figcaption aria-hidden="true">路由切换</figcaption>
-</figure>
-<ul>
-<li>搭建几个重要 VIPER 子结构 通过分析具体的业务流程和要完成的功能 不断地补充接口，篇幅问题，省略掉大部分细节，以切换 tab 为例。</li>
-</ul>
-<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="comment">// MARK: Wireframe -</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">AZMainWindowWireframeProtocol</span>: <span class="title">class</span> </span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// MARK: Presenter -</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">AZMainWindowPresenterProtocol</span>: <span class="title">class</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> router: <span class="type">AZMainWindowWireframeProtocol</span> &#123; <span class="keyword">get</span> &#125;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">switchMainWindowTabContent</span><span class="params">(<span class="number">_</span> userInfo: [AnyHashable: <span class="keyword">Any</span>])</span></span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MARK: Interactor -</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">AZMainWindowInteractorProtocol</span>: <span class="title">class</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> presenter: <span class="type">AZMainWindowPresenterProtocol?</span> &#123; <span class="keyword">get</span> <span class="keyword">set</span> &#125;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">swithMainWindowTab</span><span class="params">(<span class="number">_</span> tab: AZTitlebarTag)</span></span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// MARK: View -</span></span><br><span class="line"><span class="class"><span class="keyword">protocol</span> <span class="title">AZMainWindowViewProtocol</span>: <span class="title">class</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> presenter: <span class="type">AZMainWindowPresenterProtocol?</span> &#123; <span class="keyword">get</span> <span class="keyword">set</span> &#125;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">switchMainWindowTabContent</span><span class="params">(<span class="number">_</span> userInfo: [AnyHashable: <span class="keyword">Any</span>])</span></span></span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>随着功能的逐渐叠加，VIPER 中不同的子结构的代码增加都很平稳，不会出现某一个模块代码量指数级的增加。 从前任写完的第一个版本的 bug 叠 bug，到这个版本的内部备受好评，其实基础功能都一致，只不过是界面看上去有着巨大的差别。但是从结果来看维护成本和收益都很不错，但实际上改变的是整个项目的基础结构，开发流程，并且带动了大家往着更合理的方向前进 。 从这个过程中，内部总结出了，代码规范，提交规范，开发规范，这么看来，每个人都应该有着不少的收获.</p>
-]]></content>
-      <categories>
-        <category>Mac Develop</category>
-      </categories>
-      <tags>
-        <tag>Mac Develop</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>VSCode C++ 配置</title>
-    <url>/2020/10/03/VSCode-C/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h1 id="配置">配置</h1>
-<p>经常用 VSCode 来开发 C++，但是调试和配置每次都很头疼，现记录一下配置，备忘</p>
-<h2 id="tasks.json">tasks.json</h2>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="comment">// See https://go.microsoft.com/fwlink/?LinkId=733558</span></span><br><span class="line">    <span class="comment">// for the documentation about the tasks.json format</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;2.0.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;tasks&quot;</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;shell&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;label&quot;</span>: <span class="string">&quot;clang++ build active file&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;command&quot;</span>: <span class="string">&quot;/usr/bin/clang++&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;args&quot;</span>: [</span><br><span class="line">          <span class="string">&quot;-std=c++17&quot;</span>,</span><br><span class="line">          <span class="string">&quot;-stdlib=libc++&quot;</span>,</span><br><span class="line">          <span class="string">&quot;-g&quot;</span>,</span><br><span class="line">          <span class="comment">// &quot;$&#123;workspaceFolder&#125;/*.cpp&quot;,</span></span><br><span class="line">          <span class="string">&quot;$&#123;file&#125;&quot;</span>,</span><br><span class="line">          <span class="string">&quot;-o&quot;</span>,</span><br><span class="line">          <span class="string">&quot;$&#123;fileDirname&#125;/$&#123;fileBasenameNoExtension&#125;&quot;</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">&quot;options&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;cwd&quot;</span>: <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;problemMatcher&quot;</span>: [<span class="string">&quot;$gcc&quot;</span>],</span><br><span class="line">        <span class="attr">&quot;group&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;kind&quot;</span>: <span class="string">&quot;build&quot;</span>,</span><br><span class="line">          <span class="attr">&quot;isDefault&quot;</span>: <span class="literal">true</span></span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<h2 id="launch.json">launch.json</h2>
-<p>build and debug <figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;0.2.0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;C++ - Build and debug active file&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;cppdbg&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;request&quot;</span>: <span class="string">&quot;launch&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;program&quot;</span>: <span class="string">&quot;$&#123;fileDirname&#125;/$&#123;fileBasenameNoExtension&#125;&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;args&quot;</span>: [],</span><br><span class="line">            <span class="attr">&quot;stopAtEntry&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">            <span class="attr">&quot;cwd&quot;</span>: <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;environment&quot;</span>: [],</span><br><span class="line">            <span class="attr">&quot;externalConsole&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">            <span class="attr">&quot;MIMode&quot;</span>: <span class="string">&quot;lldb&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;preLaunchTask&quot;</span>: <span class="string">&quot;clang++ build active file&quot;</span>,</span><br><span class="line">            <span class="attr">&quot;setupCommands&quot;</span>: [</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;Enable pretty-printing for gdb&quot;</span>,</span><br><span class="line">                    <span class="attr">&quot;text&quot;</span>: <span class="string">&quot;-enable-pretty-printing&quot;</span>,</span><br><span class="line">                    <span class="attr">&quot;ignoreFailures&quot;</span>: <span class="literal">true</span></span><br><span class="line">                &#125;</span><br><span class="line">            ],</span><br><span class="line">          &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="c_cpp_cofiguration.json">c_cpp_cofiguration.json</h2>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Mac&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;includePath&quot;</span>: [<span class="string">&quot;$&#123;workspaceFolder&#125;/**&quot;</span>, <span class="string">&quot;/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/&quot;</span>],</span><br><span class="line">        <span class="attr">&quot;defines&quot;</span>: [],</span><br><span class="line">        <span class="attr">&quot;macFrameworkPath&quot;</span>: [</span><br><span class="line">          <span class="string">&quot;/System/Library/Frameworks&quot;</span>,</span><br><span class="line">          <span class="string">&quot;/Library/Frameworks&quot;</span></span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">&quot;compilerPath&quot;</span>: <span class="string">&quot;/usr/bin/clang&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;cStandard&quot;</span>: <span class="string">&quot;c11&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;cppStandard&quot;</span>: <span class="string">&quot;c++17&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;intelliSenseMode&quot;</span>: <span class="string">&quot;clang-x64&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">&quot;version&quot;</span>: <span class="number">4</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>VSCode</category>
-      </categories>
-      <tags>
-        <tag>VSCode</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Weakly Contest 169</title>
-    <url>/2019/12/29/Weakly-Contest-169/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://leetcode.com/contest/weekly-contest-169">Weakly Contest 169</a> ### 题目一 <a href="https://leetcode.com/contest/weekly-contest-169/problems/find-n-unique-integers-sum-up-to-zero/">5295. Find N Unique Integers Sum up to Zero</a></p>
-<p>Given an integer n, return any array containing n unique integers such that they add up to 0.</p>
-<p>Example 1:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: n = 5</span><br><span class="line">Output: [-7,-1,1,3,4]</span><br><span class="line">Explanation: These arrays also are accepted [-5,-1,1,2,3] , [-3,-1,2,-2,4].</span><br></pre></td></tr></table></figure>
-<p>Example 2: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: n = 3</span><br><span class="line">Output: [-1,0,1]</span><br><span class="line">Example 3:</span><br><span class="line"></span><br><span class="line">Input: n = 1</span><br><span class="line">Output: [0]</span><br><span class="line"></span><br><span class="line">Constraints:</span><br><span class="line"></span><br><span class="line">1 &lt;= n &lt;= 1000</span><br></pre></td></tr></table></figure></p>
-<a id="more"></a>
-<h3 id="解题报告">解题报告</h3>
-<h4 id="理解题意">理解题意</h4>
-<ul>
-<li>这是一道简单题</li>
-<li>给定一个数，求数组</li>
-<li>要求数组的所有元素和位0</li>
-</ul>
-<h4 id="思路">思路</h4>
-<ul>
-<li>给的数有可能为奇数、也有可能为偶数</li>
-<li>如果是奇数：从0开始向左右拓展，最后加上0即可</li>
-<li>如果为偶数：从0开始向左右拓展</li>
-</ul>
-<h4 id="代码">代码</h4>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">sumZero</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; ans;</span><br><span class="line">        <span class="keyword">if</span> (n % <span class="number">2</span> != <span class="number">0</span>) ans.push_back(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n / <span class="number">2</span>; i++) &#123;</span><br><span class="line">            ans.push_back(i);</span><br><span class="line">            ans.push_back(-i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="题目二">题目二</h2>
-<p><a href="https://leetcode.com/contest/weekly-contest-169/problems/all-elements-in-two-binary-search-trees/">5296. All Elements in Two Binary Search Trees My SubmissionsBack to Contest</a></p>
-<p>Given two binary search trees root1 and root2.</p>
-<p>Return a list containing all the integers from both trees sorted in ascending order.</p>
-<p>Example 1:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input: root1 = [2,1,4], root2 = [1,0,3]</span><br><span class="line">Output: [0,1,1,2,3,4]</span><br><span class="line">Example 2:</span><br><span class="line"></span><br><span class="line">Input: root1 = [0,-10,10], root2 = [5,1,7,0,2]</span><br><span class="line">Output: [-10,0,0,1,2,5,7,10]</span><br><span class="line">Example 3:</span><br><span class="line"></span><br><span class="line">Input: root1 = [], root2 = [5,1,7,0,2]</span><br><span class="line">Output: [0,1,2,5,7]</span><br><span class="line">Example 4:</span><br><span class="line"></span><br><span class="line">Input: root1 = [0,-10,10], root2 = []</span><br><span class="line">Output: [-10,0,10]</span><br><span class="line">Example 5:</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Input: root1 = [1,null,8], root2 = [8,1]</span><br><span class="line">Output: [1,1,8,8]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Constraints:</span><br><span class="line"></span><br><span class="line">Each tree has at most 5000 nodes.</span><br><span class="line">Each node<span class="string">&#x27;s value is between [-10^5, 10^5].</span></span><br></pre></td></tr></table></figure>
-<h3 id="解题报告-1">解题报告</h3>
-<h4 id="理解题意-1">理解题意</h4>
-<ul>
-<li>这是一道中档难度题</li>
-<li>给定两个二叉排序树，要求返回一个包含所有元素并且是递增顺序的列表</li>
-</ul>
-<h4 id="思路-1">思路</h4>
-<ul>
-<li>给定的两个二叉搜索树有可能为空</li>
-<li>二叉搜索树中序遍历即为递增排序</li>
-<li>遍历两个二叉搜索树，然后对归并排序，时间复杂度为 \(\)</li>
-</ul>
-<h4 id="代码-1">代码</h4>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">getAllElements</span><span class="params">(TreeNode* root1, TreeNode* root2)</span> </span>&#123;</span><br><span class="line">    function&lt;<span class="keyword">void</span>(TreeNode*, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp;)&gt; inorder = [&amp;](TreeNode* root, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; t) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!root) <span class="keyword">return</span>;</span><br><span class="line">      inorder(root-&gt;left, t);</span><br><span class="line">      t.push_back(root-&gt;val);</span><br><span class="line">      inorder(root-&gt;right, t);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; t1;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; t2;</span><br><span class="line">    inorder(root1, t1);</span><br><span class="line">    inorder(root2, t2);</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; m;</span><br><span class="line">    <span class="built_in">std</span>::merge(begin(t1), end(t1), begin(t2),end(t2), <span class="built_in">std</span>::back_inserter(m));</span><br><span class="line">    <span class="keyword">return</span> m;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Weakly Contest</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Wild Card Matching</title>
-    <url>/2020/04/25/WildcardMatching/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="题目">题目</h2>
-<p><a href="https://leetcode.com/problems/wildcard-matching/">Wild Card Matchin</a></p>
-<p>Given an input string (s) and a pattern (p), implement wildcard pattern matching with support for '?' and '*'.</p>
-<p>'?' Matches any single character. '*' Matches any sequence of characters (including the empty sequence). The matching should cover the entire input string (not partial).</p>
-<p>Note:</p>
-<p>s could be empty and contains only lowercase letters a-z. p could be empty and contains only lowercase letters a-z, and characters like ? or *.</p>
-<p>Example 1:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input:</span><br><span class="line">s = <span class="string">&quot;aa&quot;</span></span><br><span class="line">p = <span class="string">&quot;a&quot;</span></span><br><span class="line">Output: <span class="literal">false</span></span><br><span class="line">Explanation: <span class="string">&quot;a&quot;</span> does not match the entire string <span class="string">&quot;aa&quot;</span>.</span><br></pre></td></tr></table></figure>
-<p>Example 2:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input:</span><br><span class="line">s = <span class="string">&quot;aa&quot;</span></span><br><span class="line">p = <span class="string">&quot;*&quot;</span></span><br><span class="line">Output: <span class="literal">true</span></span><br><span class="line">Explanation: <span class="string">&#x27;*&#x27;</span> matches any sequence.</span><br></pre></td></tr></table></figure>
-<p>Example 3:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input:</span><br><span class="line">s = <span class="string">&quot;cb&quot;</span></span><br><span class="line">p = <span class="string">&quot;?a&quot;</span></span><br><span class="line">Output: <span class="literal">false</span></span><br><span class="line">Explanation: <span class="string">&#x27;?&#x27;</span> matches <span class="string">&#x27;c&#x27;</span>, but the second letter is <span class="string">&#x27;a&#x27;</span>, <span class="built_in">which</span> does not match <span class="string">&#x27;b&#x27;</span>.</span><br></pre></td></tr></table></figure>
-<p>Example 4:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input:</span><br><span class="line">s = <span class="string">&quot;adceb&quot;</span></span><br><span class="line">p = <span class="string">&quot;*a*b&quot;</span></span><br><span class="line">Output: <span class="literal">true</span></span><br><span class="line">Explanation: The first <span class="string">&#x27;*&#x27;</span> matches the empty sequence, <span class="keyword">while</span> the second <span class="string">&#x27;*&#x27;</span> matches the substring <span class="string">&quot;dce&quot;</span>.</span><br></pre></td></tr></table></figure>
-<p>Example 5:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Input:</span><br><span class="line">s = <span class="string">&quot;acdcb&quot;</span></span><br><span class="line">p = <span class="string">&quot;a*c?b&quot;</span></span><br><span class="line">Output: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-<a id="more"></a>
-<h2 id="解题报告">解题报告</h2>
-<h3 id="理解题意">理解题意</h3>
-<ul>
-<li><code>2</code> 个 字符串，长度可能不相等，一个输入字符串，一个是模式字符串</li>
-<li><code>?</code> 表示匹配任意单一字符串</li>
-<li><code>*</code> 表示匹配任意字符串序列（包含空字符串）</li>
-<li>对<code>完整</code>的输入字符串匹配</li>
-<li>输入的还有：<code>小写字母</code> 或者<code>空</code>字符</li>
-</ul>
-<h3 id="理解例子">理解例子</h3>
-<ul>
-<li><code>aa</code> 与 <code>a</code> ，单独的 <code>a</code> 不能完整匹配 <code>aa</code></li>
-<li><code>aa</code> 与 <code>*</code> ，<code>*</code> 可以匹配任意字符串</li>
-<li><code>cb</code> 与 <code>?a</code>, 从后往前看 <code>a</code> 和 <code>b</code> 并不匹配</li>
-<li><code>abceb</code> 与 <code>*a*b</code> 如下图 <img src="/images/wildcard-matching-example4.png" alt="Example 4" /></li>
-<li><code>acdcb</code> 与 <code>a*c?b</code> 如下图 <img src="/images/wildcard-matching-example5.png" alt="Example 5" /></li>
-</ul>
-<h3 id="思路">思路</h3>
-<ul>
-<li>碰到字符且模式串也是字符，直接比较就行</li>
-<li>碰到 <code>?</code> 跳过往前匹配即可，<code>?</code> 就表示匹配，</li>
-<li>碰到 <code>*</code> 会比较麻烦，因为会匹配 <code>&gt;= 0</code>个字符</li>
-<li>但一般这种类型的题目可以使用动态规划来解决</li>
-</ul>
-<h3 id="代码">代码</h3>
-<h4 id="dynamic-programming">Dynamic Programming</h4>
-<ul>
-<li>假定<code>dp_[i][j]</code> 表示 匹配串<code>(长为 i)</code> <code>s[0..i-1]</code> 与模式串<code>(长为 j)</code> <code>p[0..j-1]</code> 是否匹配，</li>
-<li>首先什么都没有肯定是相互匹配的，那么 <code>dp_[0][0] = true</code></li>
-<li><code>dp_[1...i-1][0] = false</code> 表示什么都没有和字符串不匹配</li>
-<li><code>dp_[0][j] = dp_[0][j-1]</code> 如果 <code>p[j-1] == *</code></li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isMatching</span><span class="params">(<span class="built_in">string</span> s, <span class="built_in">string</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> m = s.length();</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> n = s.length();</span><br><span class="line">        <span class="function"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&gt; <span class="title">dp_</span> <span class="params">(m+<span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;(n+<span class="number">1</span>, <span class="literal">false</span>))</span></span>;</span><br><span class="line">        dp_[<span class="number">0</span>][<span class="number">0</span>] = <span class="literal">true</span>;</span><br><span class="line">        <span class="comment">// for (int i = 1; i &lt;= m; i++) &#123;</span></span><br><span class="line">        <span class="comment">//     dp_[i][0] = false;</span></span><br><span class="line">        <span class="comment">// &#125;</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">            dp_[<span class="number">0</span>][j] = dp[<span class="number">0</span>][j<span class="number">-1</span>] &amp;&amp; (p[j<span class="number">-1</span>] == <span class="string">&#x27;*&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= n; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span>(p[j<span class="number">-1</span>] == <span class="string">&#x27;*&#x27;</span>) &#123;</span><br><span class="line">                    dp[i][j] = dp_[i][j<span class="number">-1</span>] || dp_[i<span class="number">-1</span>][j];</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    dp_[i][j] = dp_[i<span class="number">-1</span>][j<span class="number">-1</span>] &amp;&amp; (s[i<span class="number">-1</span>] == p[j<span class="number">-1</span>] || p[j<span class="number">-1</span>] == <span class="string">&#x27;?&#x27;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp_[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h4 id="递归">递归</h4>
-<h3 id="时间复杂度">时间复杂度</h3>
-<p>O(m*n)</p>
-<h3 id="空间复杂度">空间复杂度</h3>
-<p>O(m*n)</p>
-]]></content>
-      <categories>
-        <category>LeetCode</category>
-      </categories>
-      <tags>
-        <tag>LeetCode</tag>
-        <tag>Hard</tag>
-        <tag>Dynamic Programming</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS 端启动速度优化</title>
-    <url>/2020/02/19/iOS%E7%AB%AF%E5%90%AF%E5%8A%A8%E9%80%9F%E5%BA%A6%E4%BC%98%E5%8C%96/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="应用启动流程">应用启动流程</h2>
-<p><code>iOS</code> 启动可以分为<code>pre-main</code>阶段和<code>main()</code>阶段</p>
-<p><a id="more"></a></p>
-<p>### <code>pre-main</code>阶段 * 加载可执行文件 * 加载动态链接库加载器 <code>dyld</code> * 递归加载动态链接库 <code>dylib</code></p>
-<h3 id="main-阶段"><code>main</code> 阶段</h3>
-<ul>
-<li><code>dyld</code> 调用 <code>main</code></li>
-<li>调用 <code>UIApplicationMain</code></li>
-<li>调用 <code>applicationWillFinishLaunching</code></li>
-<li>调用 <code>didFinishLaunchingWithOptions</code></li>
-</ul>
-<h2 id="耗时测量">耗时测量</h2>
-<h3 id="pre-main-阶段"><code>pre-main</code> 阶段</h3>
-<ul>
-<li><code>Xcode</code> 的环境变量中 <code>DYLD_PRINT_STATICTICS</code> = 1</li>
-<li>日志里面会有详细的内容</li>
-</ul>
-<h3 id="main-阶段-1"><code>main</code> 阶段</h3>
-<ul>
-<li>测量 <code>main</code> -&gt; <code>didFinishLaunchingWithOptions</code> 的时间</li>
-</ul>
-<h3 id="优化思路">优化思路</h3>
-<ul>
-<li><code>dyld</code> 加载步骤
-<ul>
-<li><code>Load dylibs</code> &gt; 分析依赖、<code>Mach-o</code>文件、验证有效性、代码签名注册到内核、对 <code>dylib</code> 的 <code>segment</code> 调用 <code>mmap</code> &gt; * 避免使用 <code>embedded dylib</code> &gt; * 合并已有的 <code>dylib</code> , 使用静态库 &gt; * 懒加载 <code>dylib</code></li>
-<li><code>Rebase/Bind</code> &gt; <code>Rebase</code> 读入镜像、修正 <code>ASLR</code> 导致的内存地址的偏差。消耗在文件 <code>I/O</code>。 &gt; <code>Bind</code> 查询符号表、设置镜像的外部指针。消耗在 <code>CPU</code> 计算 &gt; * 减少<code>ObjC</code>的 <code>Class</code> 、<code>Selector</code>、 <code>Category</code> 数量 &gt; * 减少<code>C++</code> 虚函数数量（创建虚函数表有开销） &gt; * 使用 <code>Swift struct</code>（内部做了优化、符号开销少）</li>
-<li><code>Object setup</code> &gt; <code>dyld</code> 会注册声明过的 <code>ObjC</code> 类，将分类方法插入到类的方法列表中、检查 <code>selector</code> 的唯一性</li>
-<li><code>Initializers</code> &gt; <code>dyld</code> 开始运行程序的初始化函数、调用每个 <code>ObjC</code> <code>类</code>和<code>分类</code>的 <code>+load</code> 方法，调用 <code>C/C++</code> 中的构造器函数 ( <code>__attibute__(constructor)</code>修饰的函数)， 创建非基本类型的 <code>C++</code> 静态全局变量，随后调用 <code>main</code> 函数 &gt; * 减少 <code>+load</code> 函数做的事情，推迟到 <code>+initialize</code> 中 &gt; * 减少构造器函数的个数，在构造器函数里少作些事情 &gt; * 减少 <code>C++</code> 静态全局变量个数</li>
-</ul></li>
-</ul>
-<h3 id="main-阶段-2">main 阶段</h3>
-<blockquote>
-<p>减少 <code>didFinishLaunchingWithOptions</code> 方法里的事情 * 梳理依赖库、延迟加载可以延迟加载的库 * 把可以延迟执行的逻辑，放到后面。 * 避免复杂/多余计算 * 避免在 viewDidLoad 和 viewWillAppear中做太多的事情 * 首页控制器用纯代码方式构建</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>iOS</category>
-      </categories>
-      <tags>
-        <tag>iOS</tag>
-        <tag>启动速度</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>背包九讲</title>
-    <url>/2020/11/08/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="背包九讲读书笔记">背包九讲读书笔记</h2>
-<h3 id="背包问题">0-1 背包问题</h3>
-<h5 id="基本题目套路">基本题目套路</h5>
-<p>有 <code>N</code> 件物品和一个容量为 <code>V</code> 的背包，放入第 <code>i</code> 件物品消耗的费用是 <code>Ci</code>， 得到的价值是 <code>Wi</code>。 求解将哪些物品装入背包可使总价值总和最大。</p>
-<h5 id="基本题目思路">基本题目思路</h5>
-<ul>
-<li>特点：每件物品只有一个，选择：<code>放</code> or <code>不放</code>。</li>
-<li>子问题：<code>F[i, v]</code>： 前 <code>i</code> 件物品恰好放入容量 <code>v</code> 的背包，可以获得的最大价值</li>
-<li>状态转移：<code>F[i, v] = max&#123;F[i-1, v], F[i-1, v-Ci] + Wi&#125;</code></li>
-<li>当前的价值，只和之前的价值有关，因此两个选择下的价值为：</li>
-<li>如果 <code>i</code> 不选，价值：前 <code>i-1</code> 件，放入容量 <code>v</code> 的背包（<code>F[i-1, v]</code>）</li>
-<li>如果 <code>i</code> 选择，价值：前 <code>i-1</code> 件，放入容量（<code>v-Ci</code>）的背包（确保 i 能放下去，得减去 i 占用的容量）+ 放入 i 的价值 Wi</li>
-</ul>
-<h5 id="伪代码">伪代码</h5>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">F[<span class="number">0</span>, <span class="number">0.</span>.V] &lt;- <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i &lt;- <span class="number">1</span> to N</span><br><span class="line">    <span class="keyword">for</span> v &lt;- Ci to V</span><br><span class="line">        F[i, v] &lt;- max&#123;F[i<span class="number">-1</span>, v], F[i<span class="number">-1</span>, v-Ci] + Wi&#125;</span><br></pre></td></tr></table></figure>
-<h5 id="优化">优化</h5>
-<p>时间复杂度：<code>O(VN)</code> 空间复杂度：滚动数组（逆序计算F[v]，才能保证正确的顺序）</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">F[<span class="number">0.</span>.V] &lt;- <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i &lt;- <span class="number">1</span> to N</span><br><span class="line">    <span class="keyword">for</span> v &lt;- V to Ci</span><br><span class="line">        F[v] &lt;- max&#123;F[v], F[v-Ci] + Wi&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ZeroOnePack</span>(<span class="params">F,C,W</span>)</span></span><br><span class="line"><span class="function">    <span class="title">for</span> <span class="title">v</span> &lt;- <span class="title">V</span> <span class="title">to</span> <span class="title">C</span></span></span><br><span class="line"><span class="function">        <span class="title">F</span>[<span class="title">v</span>] &lt;- <span class="title">max</span>(<span class="params">F[v], F[C-v] + W</span>)</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">F[<span class="number">0.</span>.V] &lt;- <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i &lt;- <span class="number">1</span> to N</span><br><span class="line">        ZeroOnePack(F,Ci,Wi)</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>背包问题</category>
-      </categories>
-      <tags>
-        <tag>Medium</tag>
-        <tag>背包问题</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SuperSign</title>
-    <url>/2020/04/17/SuperSign/</url>
-    <content><![CDATA[<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h1 id="超级签名">超级签名</h1>
-<h2 id="证书类型">证书类型</h2>
-<table>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>整数类型</th>
-<th>使用场景</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>开发(Development)证书和描述文件</td>
-<td>用于开发测试，在Xcode中打包后，可在真机环境调试、安装</td>
-</tr>
-<tr class="even">
-<td>发布(Distribution)证书和描述文件</td>
-<td>* 发布(Distribution)证书和描述文件:用于提交Appstore，在Xcode中打包后，可使用Xcode、Application Loader提交到Appstore审核发布</td>
-</tr>
-</tbody>
-</table>
-<a id="more"></a>
-<h2 id="证书作用">证书作用</h2>
-<table>
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>证书</th>
-<th>文件后缀</th>
-<th>文件类型</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Provisioning Profile</td>
-<td>.mobileprovision</td>
-<td>描述文件</td>
-<td>绑定设备UDID，所以在申请开发描述文件之前，先添加调试的设备。</td>
-</tr>
-<tr class="even">
-<td>Signing Certificate</td>
-<td>.cer/.p12</td>
-<td>证书文件</td>
-<td>有开发和发布的证书，可以在钥匙串查看安装的可用的证书，过期时间等。p12是一个加密的文件，只要知道其密码，就可以供给所有的 Mac 设备使用，是这个应用的唯一标识证书和开发者，用于对应 bundleID 的应用开发和打包测试</td>
-</tr>
-</tbody>
-</table>
-<p>如果是团队开发，一般会生成 p12 给组员使用，方便管理证书</p>
-<table>
-<colgroup>
-<col style="width: 35%" />
-<col style="width: 29%" />
-<col style="width: 35%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>证书名字</th>
-<th>类型</th>
-<th>证书用途</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>adhocXXX.mobileprovision</td>
-<td>描述文件</td>
-<td>用于生成 adhoc 包时，描述可以安装ipa包的设备UDID和证书关系。（包含推送、apple pay等权限声明内容）</td>
-</tr>
-<tr class="even">
-<td>devXXX.mobileprovision</td>
-<td>描述文件</td>
-<td>用于生成 dev 包时，描述可以安装ipa包的设备UDID和证书关系。（包含推送、apple pay等权限声明内容）</td>
-</tr>
-<tr class="odd">
-<td>devXXXPushXXX.p12</td>
-<td>推送证书</td>
-<td>用于 dev 包推送时，认证和关联 应用bundleID 的证书关系</td>
-</tr>
-<tr class="even">
-<td>devXXX.p12</td>
-<td>开发证书</td>
-<td>用于打包App时，生成 dev 的 ipa 包需要的开发者信息。</td>
-</tr>
-<tr class="odd">
-<td>disXXX.mobileprovision</td>
-<td>描述文件</td>
-<td>用于生成 dis 包时，描述应用bundleID与证书的关系。（包含推送、apple pay等权限声明内容）。</td>
-</tr>
-<tr class="even">
-<td>disXXXPushXXX.p12</td>
-<td>推送证书</td>
-<td>用于 dis（或adhoc） 包推送时，认证和关联 应用bundleID 的证书关系。</td>
-</tr>
-<tr class="odd">
-<td>disXXX.p12</td>
-<td>发布证书</td>
-<td>用于打包App时，生成 dis (或adhoc) 的 ipa 包需要的开发者信息。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="证书类型的说明">证书类型的说明</h2>
-<table>
-<thead>
-<tr class="header">
-<th>用途</th>
-<th>dev</th>
-<th>adhoc</th>
-<th>dis</th>
-<th>企业证书</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>用于送审</td>
-<td>F</td>
-<td>T</td>
-<td>T</td>
-<td>F</td>
-</tr>
-<tr class="even">
-<td>未越狱，未在证书中的设备能否安装</td>
-<td>F</td>
-<td>F</td>
-<td>F</td>
-<td>T</td>
-</tr>
-<tr class="odd">
-<td>未越狱，在证书中的设备能否安装</td>
-<td>T</td>
-<td>T</td>
-<td>F</td>
-<td>T</td>
-</tr>
-<tr class="even">
-<td>越狱能否安装</td>
-<td>T</td>
-<td>T</td>
-<td>T</td>
-<td>T</td>
-</tr>
-<tr class="odd">
-<td>能否用于送审 TestFlight</td>
-<td>F</td>
-<td>F</td>
-<td>T</td>
-<td>F</td>
-</tr>
-<tr class="even">
-<td>不越狱能否打开应用的 Document 等</td>
-<td>T</td>
-<td>F</td>
-<td>F</td>
-<td>F</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li><p>如果需要添加新设备的 UDID，只要更新 .mobileprovision 描述文件既可以</p></li>
-<li><p>如果证书过期，.p12 和 .mobileprovision 文件需要重新生成，如果 revoke后生成新的证书，旧的证书和证书对应的 ipa 不能再安装在设备上</p></li>
-<li><p>描述文件保存在 macOS 路径： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">~/Library/MobileDevice/Provisioning\ Profiles/</span><br></pre></td></tr></table></figure></p></li>
-<li><p>查看安装的证书使用命令： <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">security find-identity -p codesigning -v</span><br></pre></td></tr></table></figure></p></li>
-</ul>
-<h2 id="获取-udid">获取 UDID</h2>
-<h2 id="使用配置文件获取">使用配置文件获取</h2>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">plist</span> <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//Apple//DTD PLIST 1.0//EN&quot;</span> <span class="meta-string">&quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plist</span> <span class="attr">version</span>=<span class="string">&quot;1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>PayloadContent<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">key</span>&gt;</span>URL<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">string</span>&gt;</span>https://your.hostname/receive.php<span class="tag">&lt;/<span class="name">string</span>&gt;</span> <span class="comment">&lt;!--接收数据的接口地址--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">key</span>&gt;</span>DeviceAttributes<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">string</span>&gt;</span>UDID<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">string</span>&gt;</span>IMEI<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">string</span>&gt;</span>ICCID<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">string</span>&gt;</span>VERSION<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">string</span>&gt;</span>PRODUCT<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>PayloadOrganization<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">string</span>&gt;</span>your orignation name<span class="tag">&lt;/<span class="name">string</span>&gt;</span>  <span class="comment">&lt;!--组织名称--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>PayloadDisplayName<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">string</span>&gt;</span>Obtain UDID<span class="tag">&lt;/<span class="name">string</span>&gt;</span>  <span class="comment">&lt;!--安装时显示的标题--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>PayloadVersion<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">integer</span>&gt;</span>1<span class="tag">&lt;/<span class="name">integer</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>PayloadUUID<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">string</span>&gt;</span>3C4DC7D2-E475-3375-489C-0BB8D737A653<span class="tag">&lt;/<span class="name">string</span>&gt;</span>  <span class="comment">&lt;!--自己随机填写的唯一字符串，生成的就可以--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>PayloadIdentifier<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">string</span>&gt;</span>your identifier<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>PayloadDescription<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">string</span>&gt;</span>Obtaining UDID<span class="tag">&lt;/<span class="name">string</span>&gt;</span>   <span class="comment">&lt;!--描述--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>PayloadType<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">string</span>&gt;</span>Profile Service<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plist</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>需要填写回调数据的 <code>URL</code> 和 <code>PayloadUUID</code>。该<code>PayloadUUID</code>仅仅是随机生成的唯一字符串,类似<code>bundleid</code>，一般是域名倒置，用来标识唯一。</p></li>
-<li><p><code>mobileconfig</code>中的URL要用<code>https</code>地址。否则 <code>https://your.hostname/receive.php</code> 会报ATS错误。</p></li>
-</ul>
-<h2 id="mobileconfig-文件签名">mobileconfig 文件签名</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">security cms -S -N <span class="string">&quot;Apple Development: XXX&quot;</span> -i udid.mobileconfig -o udid.signed.mobileconfig</span><br></pre></td></tr></table></figure>
-<p>这个地方使用自己的开发者账号就行，具体的内容打开<code>keychain</code>，我的账号是绑定在公司的 <code>team</code> 里面，就用它签名就行</p>
-<h2 id="receive.php">receive.php</h2>
-<p>安装成功后，系统会自动回调 <code>mobileconfig</code> 中的地址</p>
-<h2 id="服务器端支持-ssl">服务器端支持 ssl</h2>
-<p>这块在本地我用的 <code>mamp pro</code> 来搞的，比较傻瓜化</p>
-<h2 id="index.php">index.php</h2>
-<ul>
-<li>为了测试方便，就放了个按钮，指向旁边的 <code>mobileconfig</code> 文件 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;title-box&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">&quot;buttons&quot;</span> <span class="attr">href</span>=<span class="string">&quot;udid.signed.mobileconfig&quot;</span><span class="attr">target</span>=<span class="string">&quot;_blank&quot;</span>&gt;</span>获取UDID</span><br><span class="line"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="receive.php-1">receive.php</h2>
-<ul>
-<li>主要做的事情是解析上传的内容，并且跳转到新的页面</li>
-<li>跳转是必须的</li>
-</ul>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$data = file_get_contents(<span class="string">&#x27;php://input&#x27;</span>);</span><br><span class="line">$plistBegin   = <span class="string">&#x27;&lt;?xml version=&quot;1.0&quot;&#x27;</span>;</span><br><span class="line">$plistEnd   = <span class="string">&#x27;&lt;/plist&gt;&#x27;</span>;</span><br><span class="line">$pos1 = strpos($data, $plistBegin);</span><br><span class="line">$pos2 = strpos($data, $plistEnd);</span><br><span class="line">$data2 = substr ($data,$pos1,$pos2-$pos1);</span><br><span class="line">$xml = xml_parser_create();</span><br><span class="line">xml_parse_into_struct($xml, $data2, $vs);</span><br><span class="line">xml_parser_free($xml);</span><br><span class="line"></span><br><span class="line">$UDID = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$CHALLENGE = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$DEVICE_NAME = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$DEVICE_PRODUCT = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$DEVICE_VERSION = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$iterator = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">$arrayCleaned = <span class="keyword">array</span>();</span><br><span class="line"><span class="keyword">foreach</span>($vs <span class="keyword">as</span> $v)&#123;</span><br><span class="line">    <span class="keyword">if</span>($v[<span class="string">&#x27;level&#x27;</span>] == <span class="number">3</span> &amp;&amp; $v[<span class="string">&#x27;type&#x27;</span>] == <span class="string">&#x27;complete&#x27;</span>)&#123;</span><br><span class="line">        $arrayCleaned[]= $v;</span><br><span class="line">    &#125;</span><br><span class="line">    $iterator++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$data = <span class="string">&quot;&quot;</span>;</span><br><span class="line">$iterator = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">foreach</span>($arrayCleaned <span class="keyword">as</span> $elem)&#123;</span><br><span class="line">    $data .= <span class="string">&quot;\n==&quot;</span>.$elem[<span class="string">&#x27;tag&#x27;</span>].<span class="string">&quot; -&gt; &quot;</span>.$elem[<span class="string">&#x27;value&#x27;</span>].<span class="string">&quot;&lt;br/&gt;&quot;</span>;</span><br><span class="line">    <span class="keyword">switch</span> ($elem[<span class="string">&#x27;value&#x27;</span>]) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&quot;CHALLENGE&quot;</span>:</span><br><span class="line">            $CHALLENGE = $arrayCleaned[$iterator+<span class="number">1</span>][<span class="string">&#x27;value&#x27;</span>];</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&quot;DEVICE_NAME&quot;</span>:</span><br><span class="line">            $DEVICE_NAME = $arrayCleaned[$iterator+<span class="number">1</span>][<span class="string">&#x27;value&#x27;</span>];</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&quot;PRODUCT&quot;</span>:</span><br><span class="line">            $DEVICE_PRODUCT = $arrayCleaned[$iterator+<span class="number">1</span>][<span class="string">&#x27;value&#x27;</span>];</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&quot;UDID&quot;</span>:</span><br><span class="line">            $UDID = $arrayCleaned[$iterator+<span class="number">1</span>][<span class="string">&#x27;value&#x27;</span>];</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&quot;VERSION&quot;</span>:</span><br><span class="line">            $DEVICE_VERSION = $arrayCleaned[$iterator+<span class="number">1</span>][<span class="string">&#x27;value&#x27;</span>];</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        $iterator++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$params = <span class="string">&quot;UDID=&quot;</span>.$UDID.<span class="string">&quot;&amp;CHALLENGE=&quot;</span>.$CHALLENGE.<span class="string">&quot;&amp;DEVICE_NAME=&quot;</span>.$DEVICE_NAME.<span class="string">&quot;&amp;DEVICE_PR ODUCT=&quot;</span>.$DEVICE_PRODUCT.<span class="string">&quot;&amp;DEVICE_VERSION=&quot;</span>.$DEVICE_VERSION;</span><br><span class="line">header(<span class="string">&#x27;HTTP/1.1 301 Moved Permanently&#x27;</span>);</span><br><span class="line">header(<span class="string">&quot;Location: https://your.hostname/receive.php?&quot;</span>.$params);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-<h3 id="前期工作准备好之后">前期工作准备好之后</h3>
-<p>如下是在手机端的截图，能看到 <code>mobileconfig</code> 是签名过的，并且还有回调地址。 * mobileconfig 文件下载显示已签名</p>
-<figure>
-<img src="/images/IMG_8860.PNG" alt="INSTALL_PROFILE.PNG" /><figcaption aria-hidden="true">INSTALL_PROFILE.PNG</figcaption>
-</figure>
-<ul>
-<li>查看签名信息</li>
-</ul>
-<figure>
-<img src="/images/IMG_8858.PNG" alt="OBTAIN_UDID.PNG" /><figcaption aria-hidden="true">OBTAIN_UDID.PNG</figcaption>
-</figure>
-<ul>
-<li>安装成功后，系统会自动的访问 mobileconfig 中的地址，返回数据</li>
-</ul>
-<figure>
-<img src="/images/IMG_8862.PNG" alt="RESIGN.PNG" /><figcaption aria-hidden="true">RESIGN.PNG</figcaption>
-</figure>
-<h2 id="使用-fastlane-对-ipa-进行重签名">使用 <code>fastlane</code> 对 <code>ipa</code> 进行重签名</h2>
-<h3 id="安装-fastlane">安装 <code>fastlane</code></h3>
-<ul>
-<li>安装 <code>ruby</code> 由于系统自带 <code>ruby</code>，因此安装任何包需要 <code>root</code> 权限，为了防止更新系统导致兼容性等问题，故全新安装 <code>ruby</code>，将 <code>local</code> 和 <code>system</code> 的 <code>ruby</code> 隔离</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">brew install ruby</span><br></pre></td></tr></table></figure>
-<p>并且根据提示将 ruby 加入到 path 中 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=<span class="string">&quot;/usr/local/opt/ruby/bin:<span class="variable">$PATH</span>&quot;</span></span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>安装 <code>fastlane</code> 以及依赖</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gem install pry</span><br><span class="line">gem install fastlane</span><br></pre></td></tr></table></figure>
-<h4 id="测试安装是否正确">测试安装是否正确</h4>
-<p>尝试拉取一下</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&quot;spaceship&quot;</span></span><br><span class="line"></span><br><span class="line">Spaceship.login(<span class="string">&#x27;your_developerapple_id&#x27;</span>,<span class="string">&#x27;your_pass_word&#x27;</span>)</span><br><span class="line">Spaceship.certificate.all.each <span class="keyword">do</span> <span class="params">|cert|</span></span><br><span class="line">  cert_type = Spaceship::Portal::Certificate::CERTIFICATE_TYPE_IDS[cert.type_display_id].to_s.split(<span class="string">&quot;::&quot;</span>)[-<span class="number">1</span>]</span><br><span class="line">  puts <span class="string">&quot;Cert id: <span class="subst">#&#123;cert.id&#125;</span>, name: <span class="subst">#&#123;cert.name&#125;</span>, expires: <span class="subst">#&#123;cert.expires.strftime(<span class="string">&quot;%Y-%m-%d&quot;</span>)&#125;</span>, type: <span class="subst">#&#123;cert_type&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">all_devices = Spaceship::Portal.device.all.each <span class="keyword">do</span> <span class="params">|device|</span></span><br><span class="line">	puts <span class="string">&quot;device id: <span class="subst">#&#123;device.id&#125;</span>, name: <span class="subst">#&#123;device.name&#125;</span>, udid: <span class="subst">#&#123;device.udid&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>结果如下，只截取关键部分 <figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Cert id: XXXXXX, name: Development, expires: 2021-01-15, type: AppleDevelopment</span><br><span class="line">.....</span><br><span class="line"></span><br><span class="line">// 另外还有 device 列表</span><br><span class="line">device id: XXXX, name: bbbb, udid: XXXXXXXX</span><br></pre></td></tr></table></figure></p>
-<h4 id="将获取到的-udid-加入到设备列表中">将获取到的 UDID 加入到设备列表中</h4>
-<p>需要将获取到的 <code>UDID</code> 加入到 <code>team</code> 的设备列表里面，才能够将重签名的 <code>ipa</code> 下发给需要的设备安装使用。</p>
-<p>如下的代码从文件中读取上传来的 <code>UDID</code> 和设备名称，加入到所有的 <code>ad_hoc</code> 的描述文件中</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">file = File.open(<span class="string">&quot;devices-udid-name-ios.txt&quot;</span>) <span class="comment">#文本文件里录入的udid和设备名用tab分隔</span></span><br><span class="line">    file.each <span class="keyword">do</span> <span class="params">|line|</span></span><br><span class="line">        arr = line.strip.split(<span class="string">&quot; &quot;</span>)</span><br><span class="line">        device = Spaceship.device.create!(<span class="symbol">name:</span> arr[<span class="number">1</span>], <span class="symbol">udid:</span> arr[<span class="number">0</span>])</span><br><span class="line">        puts <span class="string">&quot;add device: <span class="subst">#&#123;device.name&#125;</span> <span class="subst">#&#123;device.udid&#125;</span> <span class="subst">#&#123;device.model&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    devices = Spaceship.device.all</span><br><span class="line"></span><br><span class="line">    profiles = Array.new</span><br><span class="line">    profiles += Spaceship.provisioning_profile.development.all</span><br><span class="line">    profiles += Spaceship.provisioning_profile.ad_hoc.all</span><br><span class="line"></span><br><span class="line">    profiles.each <span class="keyword">do</span> <span class="params">|p|</span></span><br><span class="line">        puts <span class="string">&quot;Updating <span class="subst">#&#123;p.name&#125;</span>&quot;</span></span><br><span class="line">        p.devices = devices</span><br><span class="line">        p.update!</span><br><span class="line">    <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>运行结果能看到</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Updating Test01</span><br><span class="line">Updating adHocResign</span><br></pre></td></tr></table></figure>
-<p>已经将获取到的 <code>UDID</code> 加到 <code>ad_hoc</code> 中</p>
-<ul>
-<li>provision 位置 如果需要查看系统中已经保存的描述文件：</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">~/Library/MobileDevice/Provisioning\ Profiles/</span><br></pre></td></tr></table></figure>
-<h4 id="签名">签名</h4>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">fastlane sigh resign your.ipa --signing_identity <span class="string">&#x27;iPhone Distribution: XXXX&#x27;</span> -p your.mobileprovision</span><br></pre></td></tr></table></figure>
-<h2 id="使用-linux-对-ipa-进行签名">使用 Linux 对 ipa 进行签名</h2>
-<h3 id="zsign">zsign</h3>
-<p><a href="https://github.com/zhlynn/zsign">GitHub - zhlynn/zsign: Maybe is the most quickly codesign alternative for iOS12+ in the world, cross-platform ( Linux &amp; macOS ), more features. sign!</a></p>
-<p><em>从介绍看只需要提供 p12 文件和 provisioning profile 即可完成签名</em></p>
-<h4 id="生成-p12">生成 p12</h4>
-<ul>
-<li>安装 openssl</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">brew install openssl</span><br></pre></td></tr></table></figure>
-<ul>
-<li>生成 csr 文件</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">openssl genrsa -out ios_distribution.key 2048</span><br><span class="line">openssl req -new -key ios_distribution.key -out ios_distribution.csr -subj <span class="string">&#x27;/emailAddress=me@example.com, CN=Example, C=US&#x27;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>将生成的文件上传到开发者网站创建 <code>Provisioning Profile</code></p></li>
-<li><p>下载生成好的文件（证书）生成 <code>PEM</code> 文件</p></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">openssl x509 -inform der -<span class="keyword">in</span> ios_distribution.cer -outform PEM -out ios_distribution.pem</span><br></pre></td></tr></table></figure>
-<ul>
-<li>下载根证书并且转为 PEM 文件</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget http://developer.apple.com/certificationauthority/AppleWWDRCA.cer</span><br><span class="line">openssl x509 -<span class="keyword">in</span> AppleWWDRCA.cer -inform DER -out AppleWWDRCA.pem -outform PEM</span><br></pre></td></tr></table></figure>
-<ul>
-<li>导出P12</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">openssl pkcs12 -<span class="built_in">export</span> -out ios_distribution.p12 -inkey ios_distribution.key -<span class="keyword">in</span> ios_distribution.pem -certfile AppleWWDRCA.pem</span><br></pre></td></tr></table></figure>
-<h4 id="安装-zsign">安装 zsign</h4>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">g++ *.cpp common/*.cpp -lcrypto -I/usr/<span class="built_in">local</span>/Cellar/openssl@1.1/1.1.1f/include -L/usr/<span class="built_in">local</span>/Cellar/openssl@1.1/1.1.1f/lib -O3 -o zsign</span><br></pre></td></tr></table></figure>
-<p><em>注意指定头文件和库文件</em></p>
-<h4 id="使用-zsign-签名">使用 zsign 签名</h4>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Usage: zsign [-options] [-k privkey.pem] [-m dev.prov] [-o output.ipa] file|folder</span><br><span class="line"></span><br><span class="line">options:</span><br><span class="line">-k, --pkey          Path to private key or p12 file. (PEM or DER format)</span><br><span class="line">-m, --prov          Path to mobile provisioning profile.</span><br><span class="line">-c, --cert          Path to certificate file. (PEM or DER format)</span><br><span class="line">-d, --debug         Generate debug output files. (.zsign_debug folder)</span><br><span class="line">-f, --force         Force sign without cache when signing folder.</span><br><span class="line">-o, --output        Path to output ipa file.</span><br><span class="line">-p, --password      Password <span class="keyword">for</span> private key or p12 file.</span><br><span class="line">-b, --bundleid      New bundle id to change.</span><br><span class="line">-n, --bundlename    New bundle name to change.</span><br><span class="line">-e, --entitlements  New entitlements to change.</span><br><span class="line">-z, --ziplevel      Compressed level when output the ipa file. (0-9)</span><br><span class="line">-l, --dylib         Path to inject dylib file.</span><br><span class="line">-w, --weak          Inject dylib as LC_LOAD_WEAK_DYLIB.</span><br><span class="line">-i, --install       Install ipa file using ideviceinstaller <span class="built_in">command</span> <span class="keyword">for</span> <span class="built_in">test</span>.</span><br><span class="line">-q, --quiet         Quiet operation.</span><br><span class="line">-v, --version       Show version.</span><br><span class="line">-h, --<span class="built_in">help</span>          Show <span class="built_in">help</span>.</span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/usr/<span class="built_in">local</span>/bin/zsign -f -k ios_distribution.p12 -p 123456  -m adHocResign.mobileprovision -b <span class="string">&#x27;com.your.package.BundleId&#x27;</span> -n <span class="string">&#x27;your.app.name&#x27;</span> -o your.ipa -z 9 your.signed.ipa</span><br><span class="line">&gt;&gt;&gt; Unzip:	your..ipa (21.26 MB) -&gt; /tmp/zsign_folder_1586264064122616 ...</span><br><span class="line">&gt;&gt;&gt; Unzip OK! (0.318s, 317925us)</span><br><span class="line">&gt;&gt;&gt; BundleId: 	your.bundle.id -&gt; your.new.bundle.id</span><br><span class="line">&gt;&gt;&gt; BundleName:  -&gt; ToTok</span><br><span class="line">&gt;&gt;&gt; Signing: 	/tmp/zsign_folder_1586264064122616/Payload/your.app ...</span><br><span class="line">&gt;&gt;&gt; AppName: 	your.app.name</span><br><span class="line">&gt;&gt;&gt; BundleId: 	com.your.package.BundleId</span><br><span class="line">&gt;&gt;&gt; TeamId: 	XXXXXXX</span><br><span class="line">&gt;&gt;&gt; SubjectCN: 	Apple Distribution: XXXXXXX</span><br><span class="line">&gt;&gt;&gt; ReadCache: 	NO</span><br><span class="line">&gt;&gt;&gt; SignFile: 	libswiftRemoteMirror.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftCoreImage.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftObjectiveC.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftCore.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftCoreGraphics.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftUIKit.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftMetal.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftDispatch.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftos.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftCoreFoundation.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftDarwin.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftQuartzCore.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftFoundation.dylib</span><br><span class="line">&gt;&gt;&gt; SignFile: 	Frameworks/libswiftSwiftOnoneSupport.dylib</span><br><span class="line">&gt;&gt;&gt; SignFolder: your.singed.app, (your.app.name)</span><br><span class="line">&gt;&gt;&gt; Signed OK! (0.746s, 745663us)</span><br><span class="line">&gt;&gt;&gt; Archiving: 	your.singed.appipa ...</span><br><span class="line">&gt;&gt;&gt; Archive OK! (21.23 MB) (2.342s, 2341848us)</span><br><span class="line">&gt;&gt;&gt; Done. (3.422s, 3421883us)</span><br></pre></td></tr></table></figure>
-<p>安装成功，并且可以正常打开</p>
-<h2 id="超级签名脚本">超级签名脚本</h2>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">&#x27;docopt&#x27;</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">&#x27;spaceship&#x27;</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">&#x27;pathname&#x27;</span></span><br><span class="line"></span><br><span class="line">doc = &lt;&lt;DOCOPT</span><br><span class="line"></span><br><span class="line"><span class="symbol">Usage:</span></span><br><span class="line">  <span class="comment">#&#123;__FILE__&#125; --apple_id=&lt;apple_id&gt; --password=&lt;password&gt; --bundle_id=&lt;bundle_id&gt; --input_ipa=&lt;input_ipa&gt;</span></span><br><span class="line">  <span class="comment">#&#123;__FILE__&#125; --help | -h</span></span><br><span class="line">  <span class="comment">#&#123;__FILE__&#125; --input_file=&lt;file_name&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">DOCOPT</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">  args = Docopt::docopt(doc)</span><br><span class="line"><span class="keyword">rescue</span> Docopt::Exit =&gt; e</span><br><span class="line">  puts e.message</span><br><span class="line">  exit</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># args.each do |key, value|</span></span><br><span class="line"><span class="comment">#   case key</span></span><br><span class="line"><span class="comment">#   when &quot;--apple_id&quot; then</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#   end</span></span><br><span class="line"><span class="comment">#   # puts key</span></span><br><span class="line"><span class="comment">#   # puts value</span></span><br><span class="line"><span class="comment"># end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DevelopPortalHandle</span></span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">initialize</span><span class="params">(userName, passwd, bundleID)</span></span></span><br><span class="line">    puts(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    puts (<span class="string">&quot;====== initialize ======&quot;</span>)</span><br><span class="line">    @userName = userName</span><br><span class="line">    @bundleID = bundleID</span><br><span class="line">    @passwd = passwd</span><br><span class="line">    list = bundleID.split(<span class="string">&quot;.&quot;</span>)</span><br><span class="line">    appidLastName = list.last</span><br><span class="line"></span><br><span class="line">    @appName = appidLastName</span><br><span class="line">    @provisionName = appidLastName</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">()</span></span></span><br><span class="line">    puts(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    puts (<span class="string">&quot;====== login ======&quot;</span>)</span><br><span class="line">    Spaceship::Portal.login(@userName,@passwd)</span><br><span class="line">    Spaceship::Portal.select_team <span class="comment"># 让用户可以选择 team</span></span><br><span class="line">    <span class="comment"># Spaceship.client.team_id = &quot;这里输入TeamId&quot;</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">allApp</span><span class="params">()</span></span></span><br><span class="line">    puts(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    puts (<span class="string">&quot;====== allApp ======&quot;</span>)</span><br><span class="line">    Spaceship::Portal.app.all.collect <span class="keyword">do</span> <span class="params">|app|</span></span><br><span class="line">      puts <span class="string">&quot;app.name: <span class="subst">#&#123;app.name&#125;</span>, app id <span class="subst">#&#123;app.app_id&#125;</span>, bundle id :<span class="subst">#&#123;app.bundle_id&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">createApp</span><span class="params">()</span></span></span><br><span class="line">    puts(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    puts (<span class="string">&quot;====== createApp ======&quot;</span>)</span><br><span class="line">    puts <span class="string">&quot;createApp find: bundle id = <span class="subst">#&#123;@bundleID&#125;</span> appName = <span class="subst">#&#123;@appName&#125;</span>&quot;</span></span><br><span class="line">    app = Spaceship::Portal.app.find(@bundleID)</span><br><span class="line">    <span class="keyword">if</span> !app <span class="keyword">then</span></span><br><span class="line">      puts(<span class="string">&quot;can&#x27;t find <span class="subst">#&#123;@bundleID&#125;</span> create a new one&quot;</span>)</span><br><span class="line">      app = Spaceship::Portal.app.create!(<span class="symbol">bundle_id:</span> @bundleID, <span class="symbol">name:</span> @appName)</span><br><span class="line">      puts <span class="string">&quot;createApp <span class="subst">#&#123;app&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">createDistributionProvision</span><span class="params">(provisioningClass)</span></span></span><br><span class="line">    puts(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    puts (<span class="string">&quot;====== createDistributionProvision ======&quot;</span>)</span><br><span class="line">    cert = Spaceship::Portal.certificate.production.all.last</span><br><span class="line">    provisionNameDis = @provisionName + <span class="string">&#x27;_dis&#x27;</span></span><br><span class="line">    profile = provisioningClass.create!(<span class="symbol">bundle_id:</span> @bundleID,<span class="symbol">certificate:</span>cert,<span class="symbol">name:</span>@provisionName)</span><br><span class="line">    <span class="keyword">return</span> profile</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">downloadDistributionProvision</span><span class="params">(provisioningClass)</span></span></span><br><span class="line">    puts(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    puts (<span class="string">&quot;====== downloadDistributionProvision ======&quot;</span>)</span><br><span class="line">    filtered_profiles = provisioningClass.find_by_bundle_id(<span class="symbol">bundle_id:</span> @bundleID)</span><br><span class="line">    profile = <span class="literal">nil</span></span><br><span class="line">    <span class="keyword">if</span>  <span class="number">0</span> &lt; filtered_profiles.length <span class="keyword">then</span></span><br><span class="line">      profile = filtered_profiles[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">elsif</span> <span class="number">0</span> == filtered_profiles.length <span class="keyword">then</span></span><br><span class="line">      profile = createProvision(provisioningClass)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    provisionNameDis = @provisionName + <span class="string">&#x27;_dis&#x27;</span></span><br><span class="line">    provisionFileName = provisionNameDis + <span class="string">&#x27;.mobileprovision&#x27;</span></span><br><span class="line">    File.write(provisionFileName, profile.download)</span><br><span class="line">    <span class="keyword">return</span> provisionFileName</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">downloadAdHocProvision</span><span class="params">()</span></span></span><br><span class="line">    puts(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    puts (<span class="string">&quot;====== downloadAdHocProvision ======&quot;</span>)</span><br><span class="line">    filtered_profiles = Spaceship::Portal.provisioning_profile.ad_hoc.find_by_bundle_id(<span class="symbol">bundle_id:</span> @bundleID)</span><br><span class="line">    profile = <span class="literal">nil</span></span><br><span class="line">    <span class="keyword">if</span>  <span class="number">0</span> &lt; filtered_profiles.length <span class="keyword">then</span></span><br><span class="line">        puts (<span class="string">&quot;<span class="subst">#&#123;@bundleID&#125;</span>&#x27;s provisioning profile exist&quot;</span>)</span><br><span class="line">        profile = filtered_profiles[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">elsif</span> <span class="number">0</span> == filtered_profiles.length <span class="keyword">then</span></span><br><span class="line">      puts (<span class="string">&quot;createProvision&quot;</span>)</span><br><span class="line">      profile = createProvision(provisioningClass)</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    provisionNameAdHoc = @provisionName + <span class="string">&#x27;_adhoc&#x27;</span></span><br><span class="line">    provisionFileName = provisionNameAdHoc + <span class="string">&#x27;.mobileprovision&#x27;</span></span><br><span class="line">    absolutePath = Pathname.new(File.dirname(__FILE_<span class="number">_</span>)).realpath.to_s &lt;&lt; <span class="string">&quot;/&quot;</span> &lt;&lt; provisionFileName</span><br><span class="line">    puts(<span class="string">&quot;absolutePath = <span class="subst">#&#123;absolutePath&#125;</span>;&quot;</span>)</span><br><span class="line">    File.write(absolutePath, profile.download)</span><br><span class="line">    <span class="keyword">return</span> absolutePath</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">createDevelopProvision</span><span class="params">()</span></span></span><br><span class="line">    puts(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    puts (<span class="string">&quot;====== createDevelopProvision ======&quot;</span>)</span><br><span class="line">    dev_certs = Spaceship::Portal.certificate.development.all</span><br><span class="line">    all_devices = Spaceship::Portal.device.all</span><br><span class="line">    provisionNameDev = @provisionName + <span class="string">&#x27;_dev&#x27;</span></span><br><span class="line">    profile = Spaceship::Portal.provisioning_profile.development.create!(<span class="symbol">bundle_id:</span> @bundleID,<span class="symbol">certificate:</span> dev_certs,<span class="symbol">name:</span> provisionNameDev,<span class="symbol">devices:</span>all_devices)</span><br><span class="line">    <span class="keyword">return</span> profile</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">downloadDevelopProvision</span><span class="params">()</span></span></span><br><span class="line">    puts(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    puts (<span class="string">&quot;====== downloadDevelopProvision ======&quot;</span>)</span><br><span class="line">    filtered_profiles = Spaceship::Portal.provisioning_profile.development.find_by_bundle_id(<span class="symbol">bundle_id:</span> @bundleID)</span><br><span class="line">    profile = <span class="literal">nil</span></span><br><span class="line">    <span class="keyword">if</span>  <span class="number">0</span> &lt; filtered_profiles.length <span class="keyword">then</span></span><br><span class="line">      profile = filtered_profiles[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">elsif</span> <span class="number">0</span> == filtered_profiles.length <span class="keyword">then</span></span><br><span class="line">      profile = createDevelopProvision()</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    provisionNameDev = @provisionName + <span class="string">&#x27;_dev&#x27;</span></span><br><span class="line">    provisionFileName = provisionNameDev + <span class="string">&#x27;.mobileprovision&#x27;</span></span><br><span class="line">    File.write(provisionFileName, profile.download)</span><br><span class="line">    <span class="keyword">return</span> provisionFileName</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">addServices</span><span class="params">(appServiceObj)</span></span></span><br><span class="line">    puts(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    puts (<span class="string">&quot;====== addServices ======&quot;</span>)</span><br><span class="line">    puts(<span class="string">&quot; add <span class="subst">#&#123;appServiceObj&#125;</span>&quot;</span>)</span><br><span class="line">    app = Spaceship::Portal.app.find(@bundleID)</span><br><span class="line">    app.update_service(appServiceObj)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">addDevices</span><span class="params">(fileName)</span></span></span><br><span class="line">    puts(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    puts (<span class="string">&quot;====== addDevices ======&quot;</span>)</span><br><span class="line">    file = File.open(fileName)</span><br><span class="line">    file.each <span class="keyword">do</span> <span class="params">|line|</span></span><br><span class="line">        arr = line.strip.split(<span class="string">&quot; &quot;</span>)</span><br><span class="line">        device = Spaceship.device.create!(<span class="symbol">name:</span> arr[<span class="number">1</span>], <span class="symbol">udid:</span> arr[<span class="number">0</span>])</span><br><span class="line">        puts <span class="string">&quot;add device: name = <span class="subst">#&#123;device.name&#125;</span>; udid = <span class="subst">#&#123;device.udid&#125;</span>; model = <span class="subst">#&#123;device.model&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">    puts (<span class="string">&quot;====== addDevices-updateAdHoc ======&quot;</span>)</span><br><span class="line"></span><br><span class="line">    profiles = Array.new</span><br><span class="line">    profiles += Spaceship.provisioning_profile.ad_hoc.all</span><br><span class="line">    devices = Spaceship.device.all</span><br><span class="line"></span><br><span class="line">    profiles.each <span class="keyword">do</span> <span class="params">|p|</span></span><br><span class="line">        puts <span class="string">&quot;Updating <span class="subst">#&#123;p.name&#125;</span>&quot;</span></span><br><span class="line">        p.devices = devices</span><br><span class="line">        p.update!</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">resign</span><span class="params">(provisionFile,inputIpa)</span></span></span><br><span class="line">    puts(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    puts (<span class="string">&quot;====== resign ======&quot;</span>)</span><br><span class="line">    resignCmd = <span class="string">&quot;/usr/local/bin/zsign -f -k adHoc_resign.p12 -p 123456&quot;</span></span><br><span class="line">    resignCmd &lt;&lt; <span class="string">&quot; -m &quot;</span> &lt;&lt; provisionFile</span><br><span class="line">    resignCmd &lt;&lt; <span class="string">&quot; -b &quot;</span> &lt;&lt; <span class="string">&quot;&#x27;<span class="subst">#&#123;@bundleID&#125;</span>&#x27;&quot;</span></span><br><span class="line">    resignCmd &lt;&lt; <span class="string">&quot; -n &#x27;ToTok&#x27;&quot;</span></span><br><span class="line">    resignCmd &lt;&lt; <span class="string">&quot; -o ToTok_AD_HOC_signed.ipa&quot;</span></span><br><span class="line">    resignCmd &lt;&lt; <span class="string">&quot; -z 9&quot;</span></span><br><span class="line">    resignCmd &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; inputIpa</span><br><span class="line">    puts (<span class="string">&quot;resign cmd = <span class="subst">#&#123;resignCmd&#125;</span>;&quot;</span>)</span><br><span class="line">    exec(resignCmd)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">handle = DevelopPortalHandle.new(args[<span class="string">&#x27;--apple_id&#x27;</span>], args[<span class="string">&#x27;--password&#x27;</span>], args[<span class="string">&#x27;--bundle_id&#x27;</span>])</span><br><span class="line">handle.login()</span><br><span class="line">handle.createApp()</span><br><span class="line">handle.addDevices(<span class="string">&quot;udid.txt&quot;</span>)</span><br><span class="line">handle.addServices(Spaceship::Portal.app_service.push_notification.on)</span><br><span class="line">provisionPath = handle.downloadAdHocProvision()</span><br><span class="line">handle.resign(provisionPath, args[<span class="string">&#x27;--input_ipa&#x27;</span>])</span><br></pre></td></tr></table></figure>
-<h2 id="脚本运行">脚本运行</h2>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ruby resignIPAWithUDID.rb --apple_id=your.apple.id --password=your.password --bundle_id=your.bundle.id --input_ipa=your.signed.ipa</span><br></pre></td></tr></table></figure>
-<h2 id="trouble-shooting">Trouble shooting</h2>
-<h3 id="ruby-脚本不能执行">ruby 脚本不能执行</h3>
-<p>因为在服务器端执行的 <code>ruby</code> 脚本的用户和我测试用的用户不是同一个用户，因此 <code>ruby</code> 的环境不一样，尤其是 <code>gem</code></p>
-<p>解决办法： 将 <code>ruby</code> 脚本封装成 <code>shell</code> 脚本，并且在执行 <code>shell</code> 脚本的时候重新制定 <code>ruby</code> 环境 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> GEM_HOME=<span class="string">&#x27;/home/www/.rvm/gems/ruby-2.3.0&#x27;</span>;</span><br><span class="line"><span class="built_in">export</span> GEM_PATH=<span class="string">&#x27;/home/www/.rvm/gems/ruby-2.3.0:/home/www/.rvm/gems/ruby-2.3.0@global&#x27;</span>;</span><br><span class="line"><span class="built_in">export</span> MY_RUBY_HOME=<span class="string">&#x27;/home/www/.rvm/rubies/ruby-2.3.0&#x27;</span>;</span><br></pre></td></tr></table></figure></p>
-<h3 id="换了用户会弹出两步验证">换了用户会弹出两步验证</h3>
-<p>参考文档：</p>
-<p><a href="https://docs.fastlane.tools/best-practices/continuous-integration/#application-specific-passwords">Continuous Integration - fastlane docs</a></p>
-<ul>
-<li><p>生成 fastlane session <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">fastlane spaceauth -u user@email.com</span><br></pre></td></tr></table></figure></p></li>
-<li><p>将生成的内容放到脚本里 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> FASTLANE_SESSION=<span class="string">&#x27;XXXXXX\n&#x27;</span></span><br></pre></td></tr></table></figure></p></li>
-</ul>
-<p>访问重签名页面调用脚本即可</p>
-]]></content>
-      <categories>
-        <category>Super Sign</category>
-      </categories>
-      <tags>
-        <tag>iOS</tag>
-        <tag>SuperSign</tag>
-        <tag>超级签名</tag>
-      </tags>
-  </entry>
-</search>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// you can use includes, for example:</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="comment">// you can write to stdout for debugging purposes, e.g.</span></span><br><span class="line"><span class="comment">// cout &lt;&lt; &quot;this is a debug message&quot; &lt;&lt; endl;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">solution</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;A, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &amp;B)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// write your code in C++14 (g++ 6.2.0)</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> m = A.size();</span><br><span class="line">    <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; freqs;</span><br><span class="line">    <span class="keyword">int</span> maxFreq = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> n: A)</span><br><span class="line">        freqs[n]++;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> n: B)</span><br><span class="line">        freqs[n]++;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">pair</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; &gt; vec;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        vec.push_back(<span class="built_in">make_pair</span>(A[i], B[i]));</span><br><span class="l
